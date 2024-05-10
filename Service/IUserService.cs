@@ -11,5 +11,8 @@ namespace Service
         Task<bool> SignupAsync(string username, string email, string password);
         Task<List<User>> getAllUsersAsync(string id);
         Task<string> getUserIdAsync(string username);
+
+        //Git
+        Task<bool> UpdateUserProfileAsync(string userId, string email, string username);
     }
 }
