@@ -35,5 +35,18 @@ namespace Repository
             return await _collection.Find(e => e.Id != id).ToListAsync();
         }
 
+
+
+        //Git
+        public async Task<User> GetByIdAsync(string userId)
+        {
+            return await _collection.Find(u => u.Id == userId).FirstOrDefaultAsync();
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            await _collection.ReplaceOneAsync(u => u.Id == user.Id, user);
+        }
+
     }
 }
