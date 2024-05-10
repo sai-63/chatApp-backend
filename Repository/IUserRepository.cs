@@ -11,5 +11,11 @@ namespace Repository
         Task<User> GetUserByUsernameAsync(string username);
         Task AddUserAsync(User user);
         Task<List<User>> GetAllUsersAsync(string id);
+
+
+        //Git
+        Task<User> GetByIdAsync(string userId);
+
+        Task UpdateAsync(User user);
     }
 }
