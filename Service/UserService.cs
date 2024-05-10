@@ -60,5 +60,24 @@ namespace Service
             User user = await _userRepository.GetUserByUsernameAsync(username);
             return user.Id;
         }
+
+        //Git
+
+        public async Task<bool> UpdateUserProfileAsync(string userId, string email, string username)
+        {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.Email = email;
+            user.Username = username;
+
+            await _userRepository.UpdateAsync(user);
+
+            return true;
+        }
     }
 }
