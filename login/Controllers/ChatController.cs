@@ -11,10 +11,12 @@ namespace login.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
+        private readonly IUserService _userService;
 
-        public ChatController(IChatService chatService)
+        public ChatController(IChatService chatService, IUserService userService)
         {
             _chatService = chatService;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -40,5 +42,20 @@ namespace login.Controllers
         }
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
+
+        [HttpPost]
+        [Route("ProfileUpdate")]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] Userupdateprofile model)
+        {
+            // Update user profile using UserService
+            var result = await _userService.UpdateUserProfileAsync(model.UserId, model.Email, model.Username);
+
+            if (result)
+            {
+                return Ok(new { success = true, message = "Profile updated successfully" });
+            }
+
+            return NotFound("User not found");
+        }
     }
 }
