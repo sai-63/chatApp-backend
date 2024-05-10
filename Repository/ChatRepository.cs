@@ -1,13 +1,14 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using login.Common.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Repository
 {
     public class ChatRepository : IChatRepository
     {
-        private readonly IMongoCollection<Chat> _collection;
+        private readonly IMongoCollection<Chat> _collection;        
 
         public ChatRepository(IMongoClient client, string databaseName, string collectionName)
         {
@@ -44,5 +45,8 @@ namespace Repository
 
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
+
+
+
     }
 }
