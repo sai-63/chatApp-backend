@@ -12,11 +12,13 @@ namespace login.Controllers
     {
         private readonly IChatService _chatService;
         private readonly IUserService _userService;
+        private readonly IGroupService _groupService;
 
-        public ChatController(IChatService chatService, IUserService userService)
+        public ChatController(IChatService chatService, IUserService userService,IGroupService groupService)
         {
             _chatService = chatService;
             _userService = userService;
+            _groupService = groupService;
         }
 
         [HttpGet]
@@ -42,7 +44,9 @@ namespace login.Controllers
         }
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
+        
 
+        //Profile Update
         [HttpPost]
         [Route("ProfileUpdate")]
         public async Task<IActionResult> UpdateUserProfile([FromBody] Userupdateprofile model)
@@ -57,5 +61,52 @@ namespace login.Controllers
 
             return NotFound("User not found");
         }
+
+
+        //Group CHAT
+        [HttpPost]
+        [Route("CreateGroup")]
+        public async Task<IActionResult> CreateGroup(Group group)
+        {
+            // Validate group data
+            //if (group == null || string.IsNullOrWhiteSpace(group.Name) || group.Users == null || group.Users.Count == 0)
+            //{return BadRequest("Invalid group data");}
+
+            // Check if the group already exists
+            //var existingGroup = await _chatService.GetGroupByNameAsync(group.Name);
+            //if (existingGroup != null) {return Conflict("Group with the same name already exists");}
+
+            // Create the group
+            await _groupService.CreateGroupAsync(group);
+
+            return Ok("Group created successfully.");
+        }
+
+        [HttpPost]
+        [Route("AddUsersToGroup")]
+        public async Task<IActionResult> AddUsersToGroup(string groupId, List<string> userIds)
+        {
+            // Validate group and user IDs
+            if (string.IsNullOrWhiteSpace(groupId) || userIds == null || userIds.Count == 0)
+            {
+                return BadRequest("Invalid group or user IDs");
+            }
+
+            // Add users to the group
+            await _groupService.AddUsersToGroupAsync(groupId, userIds);
+
+            return Ok("Users added to the group successfully.");
+        }
+
+        //Get all groups
+        [HttpGet]
+        [Route("GetAllGroups")]
+        public async Task<IEnumerable<Group>> GetAllGroups()
+        {
+            return await _groupService.GetAllGroups();
+        }
+
+
+
     }
 }
