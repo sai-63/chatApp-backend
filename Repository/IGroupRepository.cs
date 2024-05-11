@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using login.Common.Models;
+using MongoDB.Bson;
 using MongoDB.Driver.Core.Servers;
 
 namespace Repository
@@ -11,5 +12,6 @@ namespace Repository
         Task CreateGroupAsync(Group group);
         Task AddUsersToGroupAsync(string groupId, List<string> userIds);
         Task<IEnumerable<Group>> GetAllGroupsAsync();
+        Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
     }
 }

@@ -7,7 +7,7 @@ namespace login.Common.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        //public ObjectId Id { get; set; }
+        public ObjectId Id { get; set; }
 
         [BsonElement("senderId")]
         public string SenderId { get; set; }

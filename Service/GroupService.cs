@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using login.Common.Models;
+using MongoDB.Bson;
 using Repository;
 
 namespace Service
@@ -32,6 +33,15 @@ namespace Service
         public async Task<IEnumerable<Group>> GetAllGroups()
         {
             return await _groupRepository.GetAllGroupsAsync();
+        }
+
+        //public async Task<IEnumerable<Group>> GetUserGroupsAsync(string userId)
+        //{
+        //  return await _groupRepository.GetUserGroupsAsync(userId);
+        //}
+        public async Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname)
+        {
+            return await _groupRepository.GetGroupMessagesAsync(groupname);
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using login.Common.Models;
 using Service;
+using MongoDB.Bson;
 
 namespace login.Controllers
 {
@@ -63,7 +64,8 @@ namespace login.Controllers
         }
 
 
-        //Group CHAT
+        //Group CHAT API"S
+
         [HttpPost]
         [Route("CreateGroup")]
         public async Task<IActionResult> CreateGroup(Group group)
@@ -105,6 +107,31 @@ namespace login.Controllers
         {
             return await _groupService.GetAllGroups();
         }
+
+        [HttpGet]
+        [Route("GetUserGroups")]
+        public async Task<ActionResult<IEnumerable<Group>>> GetUserGroups(string username)
+        {
+            var userGroups = await _groupService.GetAllGroups(); // Fetch all groups
+            var userGroupsWithMessages = userGroups.Where(g => g.Users.Contains(username)); // Filter groups with messages from the current user
+            return Ok(userGroupsWithMessages);
+        }
+
+        [HttpGet]
+        [Route("GetGroupMessages")]
+        public async Task<ActionResult<IEnumerable<New>>> GetGroupMessages(string groupname)
+        {
+            //if (string.IsNullOrWhiteSpace(groupid))
+            //{
+              //  return BadRequest("Group ID cannot be null or empty");
+            //}
+
+            var groupMessages = await _groupService.GetGroupMessagesAsync(groupname); // Fetch messages for the group
+
+            return Ok(groupMessages);
+        }
+
+
 
 
 
