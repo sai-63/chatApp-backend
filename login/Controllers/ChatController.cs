@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using login.Common.Models;
 using Service;
 using MongoDB.Bson;
+using Common.Models;
+using MongoDB.Driver;
 
 namespace login.Controllers
 {
@@ -86,18 +88,20 @@ namespace login.Controllers
 
         [HttpPost]
         [Route("AddUsersToGroup")]
-        public async Task<IActionResult> AddUsersToGroup(string groupId, List<string> userIds)
+        public async Task<IActionResult> AddUsersToGroup(Joingrp j)
         {
-            // Validate group and user IDs
-            if (string.IsNullOrWhiteSpace(groupId) || userIds == null || userIds.Count == 0)
-            {
-                return BadRequest("Invalid group or user IDs");
-            }
 
             // Add users to the group
-            await _groupService.AddUsersToGroupAsync(groupId, userIds);
-
-            return Ok("Users added to the group successfully.");
+            var adduser=await _groupService.AddUsersToGroupAsync(j);
+            if (adduser)
+            {
+                return Ok("Users added to the group successfully.");
+            }
+            else
+            {
+                //return Ok($"{username} already in Group {groupname}");
+                return Ok("Already");
+            }
         }
 
         //Get all groups
@@ -131,6 +135,13 @@ namespace login.Controllers
             return Ok(groupMessages);
         }
 
+        [HttpGet]
+        [Route("GetUserOfGroup")]
+        public async Task<ActionResult<IEnumerable<List<String>>>> GetUsersOfGroup(string groupname)
+        {
+            var grusers=await _groupService.GetUsersOfGroupAsync(groupname);
+            return Ok(grusers);
+        }
 
 
 

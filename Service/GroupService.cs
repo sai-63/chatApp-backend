@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using Repository;
@@ -24,9 +25,9 @@ namespace Service
             await _groupRepository.CreateGroupAsync(group);
         }
 
-        public async Task AddUsersToGroupAsync(string groupId, List<string> userIds)
+        public async Task<bool>AddUsersToGroupAsync(Joingrp j)
         {
-            await _groupRepository.AddUsersToGroupAsync(groupId, userIds);
+            return await _groupRepository.AddUsersToGroupAsync(j);
         }
 
         //Get all groups
@@ -42,6 +43,11 @@ namespace Service
         public async Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname)
         {
             return await _groupRepository.GetGroupMessagesAsync(groupname);
+        }
+
+        public async Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname)
+        {
+            return await _groupRepository.GetUsersOfGroupAsync(groupname);
         }
     }
 }

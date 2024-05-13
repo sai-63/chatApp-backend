@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
+using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -28,11 +30,35 @@ namespace Repository
             await _groo.InsertOneAsync(group);
         }
 
-        public async Task AddUsersToGroupAsync(string groupId, List<string> userIds)
+        public async Task<bool>AddUsersToGroupAsync(Joingrp j)
         {
-            var filter = Builders<Group>.Filter.Eq(g => g.Id, ObjectId.Parse(groupId));
-            var update = Builders<Group>.Update.AddToSetEach(g => g.Users, userIds);
-            await _groo.UpdateOneAsync(filter, update);
+            var filter = Builders<Group>.Filter.Eq("name",j.groupname);
+            var group = await _groo.Find(filter).FirstOrDefaultAsync();
+
+            if (group != null)
+            {
+                if (group.Users.Contains(j.username))
+                {
+                    // User is already in the group, print a message or handle it as needed
+                    return false;
+                }
+                // Check if the user is already in the group
+                else
+                {
+                    // Add the user to the group
+                    group.Users.Add(j.username);
+
+                    // Update the group document in the database
+                    var update = Builders<Group>.Update.Set("users", group.Users);
+                    await _groo.UpdateOneAsync(filter, update);
+                    return true;
+                }
+            }
+            else
+            {
+                // Handle case where group is not found
+                throw new Exception("Group not found.");
+            }
         }
 
         //Get all groups
@@ -73,6 +99,20 @@ namespace Repository
             {
                 // Group not found, return an empty list
                 return new List<New>();
+            }
+        }
+
+        public async Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname)
+        {
+            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);
+            var group = await _groo.Find(filter).FirstOrDefaultAsync();
+            if (group != null)
+            {
+                return group.Users.Select(user => new List<string> { user }).ToList();
+            }
+            else
+            {
+                return new List<List<String>>();
             }
         }
 

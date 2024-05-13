@@ -1,4 +1,5 @@
-﻿using login.Common.Models;
+﻿using Common.Models;
+using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -13,11 +14,13 @@ namespace Service
     {
         Task<Group> GetGroupByNameAsync(string groupName);
         Task CreateGroupAsync(Group group);
-        Task AddUsersToGroupAsync(string groupId, List<string> userIds);
+        Task<bool>AddUsersToGroupAsync(Joingrp j);
         Task<IEnumerable<Group>> GetAllGroups();
         //Task<IEnumerable<Group>> GetUserGroupsAsync(string userId);
 
         Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
-        
+        Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname);
+
+
     }
 }
