@@ -104,6 +104,25 @@ namespace login.Controllers
             }
         }
 
+        //Remove a user
+        [HttpPost]
+        [Route("RemoveUserFromGroup")]       
+        public async Task<IActionResult> RemoveUserFromGroup(Joingrp j)
+        {
+
+            // Remove user from the group
+            var removeuser=await _groupService.RemoveFromGroupAsync(j);
+            if (removeuser)
+            {
+                return Ok("User removed from the group successfully.");
+            }
+            else
+            {
+                //No such user in grp
+                return Ok("No such user in the group");
+            }
+        }
+
         //Get all groups
         [HttpGet]
         [Route("GetAllGroups")]

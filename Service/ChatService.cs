@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using login.Common.Models;
+using Common.Models;
 using Repository;
 
 namespace Service

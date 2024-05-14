@@ -29,6 +29,13 @@ namespace Service
         {
             return await _groupRepository.AddUsersToGroupAsync(j);
         }
+        //My code
+        public async Task<bool> RemoveFromGroupAsync(Joingrp j)
+        {
+            return await _groupRepository.RemoveFromGroupAsync(j);
+
+            //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
+        }
 
         //Get all groups
         public async Task<IEnumerable<Group>> GetAllGroups()
