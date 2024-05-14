@@ -13,12 +13,21 @@ C:/Users/91939/source/repos/login/Repository/obj/Debug/net8.0/Repository.dll
 C:/Users/91939/source/repos/login/Repository/obj/Debug/net8.0/refint/Repository.dll
 C:/Users/91939/source/repos/login/Repository/obj/Debug/net8.0/Repository.pdb
 C:/Users/91939/source/repos/login/Repository/obj/Debug/net8.0/ref/Repository.dll
+<<<<<<< HEAD
+=======
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Repository.deps.json
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Repository.dll
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Repository.pdb
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Common.dll
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Common.pdb
+>>>>>>> e35b0906c5fe66b2932f7ac37a60b1c34280a8d5
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.csproj.AssemblyReference.cache
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.GeneratedMSBuildEditorConfig.editorconfig
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.AssemblyInfoInputs.cache
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.AssemblyInfo.cs
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.csproj.CoreCompileInputs.cache
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.sourcelink.json
+<<<<<<< HEAD
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/refint/Repository.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.pdb
@@ -28,4 +37,10 @@ C:/Users/91939/source/repos/login/Repository/obj/Debug/net8.0/ref/Repository.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Common.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/bin/Debug/net8.0/Common.pdb
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.csproj.Up2Date
+=======
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.csproj.Up2Date
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.dll
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/refint/Repository.dll
+/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/Repository.pdb
+>>>>>>> e35b0906c5fe66b2932f7ac37a60b1c34280a8d5
 /Users/supreethreddy/Desktop/New/chatApp-backend/Repository/obj/Debug/net8.0/ref/Repository.dll

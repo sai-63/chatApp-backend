@@ -58,9 +58,12 @@ C:/Users/91939/source/repos/login/login/obj/Debug/net8.0/login.pdb
 C:/Users/91939/source/repos/login/login/obj/Debug/net8.0/login.genruntimeconfig.cache
 C:/Users/91939/source/repos/login/login/obj/Debug/net8.0/ref/login.dll
 C:/Users/91939/source/repos/login/login/bin/Debug/net8.0/System.Web.Cors.dll
+<<<<<<< HEAD
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/login.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/refint/login.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/login.pdb
+=======
+>>>>>>> e35b0906c5fe66b2932f7ac37a60b1c34280a8d5
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/bin/Debug/net8.0/appsettings.Development.json
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/bin/Debug/net8.0/appsettings.json
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/bin/Debug/net8.0/login
@@ -117,5 +120,11 @@ C:/Users/91939/source/repos/login/login/bin/Debug/net8.0/System.Web.Cors.dll
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/staticwebassets.pack.json
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/scopedcss/bundle/login.styles.css
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/login.csproj.Up2Date
+<<<<<<< HEAD
+=======
+/Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/login.dll
+/Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/refint/login.dll
+/Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/login.pdb
+>>>>>>> e35b0906c5fe66b2932f7ac37a60b1c34280a8d5
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/login.genruntimeconfig.cache
 /Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/Debug/net8.0/ref/login.dll

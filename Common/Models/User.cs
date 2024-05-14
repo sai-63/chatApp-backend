@@ -16,5 +16,12 @@ namespace login.Common.Models
 
         [BsonElement("Password")]
         public string Password { get; set; }
+
+        [BsonElement("Nickname")]
+        public string Nickname { get; set; }
+
+        [BsonElement("Friends")]
+        public List<string> Friends { get; set; }
+
     }
 }
