@@ -1596,40 +1596,38 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\91939\\.nuget\\packages\\": {}
+    "/Users/supreethreddy/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\91939\\source\\repos\\login\\login\\login.csproj",
+      "projectUniqueName": "/Users/supreethreddy/Desktop/New/chatApp-backend/login/login.csproj",
       "projectName": "login",
-      "projectPath": "C:\\Users\\91939\\source\\repos\\login\\login\\login.csproj",
-      "packagesPath": "C:\\Users\\91939\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\91939\\source\\repos\\login\\login\\obj\\",
+      "projectPath": "/Users/supreethreddy/Desktop/New/chatApp-backend/login/login.csproj",
+      "packagesPath": "/Users/supreethreddy/.nuget/packages/",
+      "outputPath": "/Users/supreethreddy/Desktop/New/chatApp-backend/login/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\91939\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/supreethreddy/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\91939\\source\\repos\\login\\Common\\Common.csproj": {
-              "projectPath": "C:\\Users\\91939\\source\\repos\\login\\Common\\Common.csproj"
+            "/Users/supreethreddy/Desktop/New/chatApp-backend/Common/Common.csproj": {
+              "projectPath": "/Users/supreethreddy/Desktop/New/chatApp-backend/Common/Common.csproj"
             },
-            "C:\\Users\\91939\\source\\repos\\login\\Repository\\Repository.csproj": {
-              "projectPath": "C:\\Users\\91939\\source\\repos\\login\\Repository\\Repository.csproj"
+            "/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/Repository.csproj": {
+              "projectPath": "/Users/supreethreddy/Desktop/New/chatApp-backend/Repository/Repository.csproj"
             },
-            "C:\\Users\\91939\\source\\repos\\login\\Service\\Service.csproj": {
-              "projectPath": "C:\\Users\\91939\\source\\repos\\login\\Service\\Service.csproj"
+            "/Users/supreethreddy/Desktop/New/chatApp-backend/Service/Service.csproj": {
+              "projectPath": "/Users/supreethreddy/Desktop/New/chatApp-backend/Service/Service.csproj"
             }
           }
         }
@@ -1638,6 +1636,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -1680,7 +1683,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.204/PortableRuntimeIdentifierGraph.json"
       }
     }
   },
