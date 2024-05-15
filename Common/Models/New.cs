@@ -18,8 +18,8 @@ namespace login.Common.Models
         [BsonElement("message")]
         public string Message { get; set; }
 
-        [BsonRepresentation(BsonType.Int64)]
-        public long Timestamp { get; set; }
+        [BsonElement("Timestamp")]
+        public DateTime Timestamp { get; set; }
 
 
     }

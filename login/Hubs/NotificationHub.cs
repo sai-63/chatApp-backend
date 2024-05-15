@@ -51,5 +51,20 @@ namespace login.Hubs
             return $"User_{userId}";
         }
 
+
+        //Group SignalR
+        public async Task SendToGroup(string groupName, string senderId, Chat chat)
+        {
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
+        }
+
+        public async Task RemoveMessageFromGroup(string groupName, string messageId, string chatDate)
+        {
+            // Perform deletion logic here, e.g., remove message from data store
+
+            // Broadcast message removal to all clients in the group
+            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
+        }
+
     }
 }
