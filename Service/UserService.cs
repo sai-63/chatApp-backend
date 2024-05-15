@@ -60,5 +60,30 @@ namespace Service
             User user = await _userRepository.GetUserByUsernameAsync(username);
             return user.Id;
         }
+
+        public async Task<bool> addFriend(string userId, string friendId)
+        {
+            var result = await _userRepository.addFriendAsync(userId,friendId);
+            if (result)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<User>> getAllFriendsAsync(string id)
+        {
+            return await _userRepository.GetAllFriendsAsync(id);
+        }
+
+        public async Task<bool> IsFriend(string userId, string friendId)
+        {
+            var check= await _userRepository.isFriendAsync(userId, friendId);
+            if (check)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 }

@@ -11,5 +11,8 @@ namespace Repository
         Task<User> GetUserByUsernameAsync(string username);
         Task AddUserAsync(User user);
         Task<List<User>> GetAllUsersAsync(string id);
+        Task<bool> addFriendAsync(string userId,string friendId);
+        Task<bool> isFriendAsync(string userId, string friendId);
+        Task<List<User>> GetAllFriendsAsync(string id);
     }
 }

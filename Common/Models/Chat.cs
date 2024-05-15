@@ -9,6 +9,9 @@ namespace login.Common.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public ObjectId Id { get; set; }
 
+        [BsonElement("MessageId")]
+        public String MessageId { get; set; }
+
         [BsonElement("SenderId")]
         public String SenderId { get; set; }
 
@@ -18,7 +21,7 @@ namespace login.Common.Models
         [BsonElement("Message")]
         public string Message { get; set; }
 
-        [BsonRepresentation(BsonType.Int64)]
-        public long Timestamp { get; set; }
+        [BsonElement("Timestamp")]
+        public DateTime Timestamp { get; set; }
     }
 }
