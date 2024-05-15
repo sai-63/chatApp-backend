@@ -23,7 +23,7 @@ namespace Service
             return user;
         }
 
-        public async Task<bool> SignupAsync(string username, string email, string password)
+        public async Task<bool> SignupAsync(string username, string email, string password, string nickname, List<string> friends)
         {
             // Check if username or email already exists
             var existingUser = await _userRepository.GetUserByUsernameAsync(username);
@@ -43,7 +43,9 @@ namespace Service
             {
                 Username = username,
                 Email = email,
-                Password = password // You should hash the password before storing it
+                Password = password, // You should hash the password before storing it
+                Nickname = nickname,
+                Friends = friends
             };
 
             await _userRepository.AddUserAsync(newUser);
