@@ -33,7 +33,7 @@ namespace login.Controllers
         [Route("SignUp")]
         public async Task<ActionResult> Signup([FromBody] User user)
         {
-            var result = await _userService.SignupAsync(user.Username, user.Email, user.Password);
+            var result = await _userService.SignupAsync(user.Username, user.Email, user.Password,user.Nickname,user.Friends);
             if (result)
             {
                 return Ok("User signed up successfully.");
