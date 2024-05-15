@@ -116,5 +116,31 @@ namespace Repository
             }
         }
 
+        public async Task<bool> RemoveFromGroupAsync(Joingrp j)
+        {
+            var filter = Builders<Group>.Filter.Eq("name", j.groupname);
+            var group = await _groo.Find(filter).FirstOrDefaultAsync();
+            if (group != null)
+            {
+                if (group.Users.Contains(j.username))
+                {
+                    group.Users.Remove(j.username);
+                    var update = Builders<Group>.Update.Set("users", group.Users);
+                    await _groo.UpdateOneAsync(filter, update);
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                throw new Exception("Group not found.");
+            }
+
+            //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
+        }
+
     }
 }

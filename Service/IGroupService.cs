@@ -20,6 +20,7 @@ namespace Service
 
         Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname);
+        Task<bool> RemoveFromGroupAsync(Joingrp j);
 
 
     }

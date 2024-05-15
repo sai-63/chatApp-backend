@@ -49,5 +49,11 @@ namespace Service
         {
             return await _groupRepository.GetUsersOfGroupAsync(groupname);
         }
+        public async Task<bool> RemoveFromGroupAsync(Joingrp j)
+        {
+            return await _groupRepository.RemoveFromGroupAsync(j);
+
+            //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
+        }
     }
 }
