@@ -35,5 +35,55 @@ namespace Repository
             return await _collection.Find(e => e.Id != id).ToListAsync();
         }
 
+        public async Task<bool> addFriendAsync(string userId, string friendId)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+
+            // Update definition to add the userId to the Friends array
+            var update = Builders<User>.Update.Push(u => u.Friends, friendId);
+
+            // Update the user document in the collection
+            var result = await _collection.UpdateOneAsync(filter, update);
+
+            // Check if the update was successful
+            if(result.ModifiedCount > 0)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<List<User>> GetAllFriendsAsync(string id)
+        {
+            // Assuming _collection is your MongoDB collection
+            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var user = await _collection.Find(filter).FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                // User not found, return an empty list or handle it accordingly
+                return new List<User>();
+            }
+
+            var friendFilter = Builders<User>.Filter.In(u => u.Id, user.Friends);
+            var friends = await _collection.Find(friendFilter).ToListAsync();
+
+            return friends;
+        }
+
+        public async Task<bool> isFriendAsync(string userId, string friendId)
+        {
+            var filter = Builders<User>.Filter.And(
+        Builders<User>.Filter.Eq(u => u.Id, userId),
+        Builders<User>.Filter.AnyEq(u => u.Friends, friendId)
+    );
+
+            // Check if there's any user matching the filter
+            var user = await _collection.Find(filter).FirstOrDefaultAsync();
+
+            // If user is not null, friendId is in the Friends list
+            return user != null;
+        }
+
     }
 }

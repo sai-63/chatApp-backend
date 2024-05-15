@@ -58,3 +58,4 @@ C:\Users\91939\source\repos\login\login\obj\Debug\net8.0\login.pdb
 C:\Users\91939\source\repos\login\login\obj\Debug\net8.0\login.genruntimeconfig.cache
 C:\Users\91939\source\repos\login\login\obj\Debug\net8.0\ref\login.dll
 C:\Users\91939\source\repos\login\login\bin\Debug\net8.0\System.Web.Cors.dll
+C:\Users\91939\source\repos\login\login\obj\Debug\net8.0\login.sourcelink.json

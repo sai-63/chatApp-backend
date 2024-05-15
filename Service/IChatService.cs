@@ -1,4 +1,5 @@
 ﻿using login.Common.Models;
+using MongoDB.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +12,8 @@ namespace Service
     {
         Task<IEnumerable<Chat>> GetAllChatsAsync();
         Task SendMessageAsync(Chat message);
+        Task<bool> DeleteMessageAsync(string id);
         // Other method signatures as needed
-        Task<IEnumerable<Chat>> getIndividualMessages(String senderId, String receiverId);
+        Task<IDictionary<string, List<Chat>>> getIndividualMessages(String senderId, String receiverId);
     }
 }

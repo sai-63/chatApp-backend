@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Service;
 using login.Common.Models;
 using MongoDB.Bson;
+using Common.Models;
 
 namespace login.Controllers
 {
@@ -54,5 +55,31 @@ namespace login.Controllers
         {
             return await _userService.getAllUsersAsync(id);
         }
+
+        [HttpPost]
+        [Route("AddFriend")]
+        public async Task<ActionResult> AddFriend(Friend friend)
+        {
+            var check = await _userService.IsFriend(friend.userId, friend.friendId);
+            if(check)
+            {
+                return Ok("Already a friend");
+            }
+
+            var result = await _userService.addFriend(friend.userId,friend.friendId);
+            if (result)
+            {
+                return Ok("Friend added successfully.");
+            }
+            return BadRequest("Failed to add as a friend.");
+        }
+
+        [HttpGet]
+        [Route("GetFriends")]
+        public async Task<ActionResult<List<User>>> GetFriends(string id)
+        {
+            return await _userService.getAllFriendsAsync(id);
+        }
+
     }
 }

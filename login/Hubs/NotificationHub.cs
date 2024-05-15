@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
+using login.Common.Models;
 
 namespace login.Hubs
 {
@@ -19,21 +20,36 @@ namespace login.Hubs
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
 
-        public async Task SendToUser(string senderId, string receiverId, string message)
+        public async Task SendToUser(string senderId, string receiverId, Chat chat)
         {
             string groupName = GetGroupName(receiverId);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, message);
+            string mygroupName = GetGroupName(senderId);
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
+            await Clients.Group(mygroupName).SendAsync("ReceiveMessage", senderId, chat);
         }
 
-        public async Task SendToOwnGroup(string senderId,string message)
+        public async Task SendToOwnGroup(string senderId,Chat chat)
         {
             string groupName = GetGroupName(senderId);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, message);
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
+        }
+
+        public async Task RemoveMessage(string receiverId,string messageId,string chatDate)
+        {
+            // Perform deletion logic here, e.g., remove message from data store
+
+            // Broadcast message removal to all clients
+            string userId = Context.GetHttpContext().Request.Query["userId"];
+            string groupName = GetGroupName(receiverId);
+            string mygroupName = GetGroupName(userId);
+            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId,chatDate);
+            await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId,chatDate);
         }
 
         private string GetGroupName(string userId)
         {
             return $"User_{userId}";
         }
+
     }
 }
