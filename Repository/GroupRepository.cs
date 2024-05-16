@@ -6,12 +6,11 @@ using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Group = login.Common.Models.Group;
+using Group = Common.Models.Group;
 namespace Repository
 {
     public class GroupRepository : IGroupRepository
     {
-
         private readonly IMongoCollection<Group> _groo;
 
         public GroupRepository(IMongoClient client, string databaseName, string collectionName)
@@ -141,6 +140,26 @@ namespace Repository
             }
 
             //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
+        }
+        public async Task<IEnumerable<String>> GetgroupidAsync(string gname)
+        {
+            var group = await _groo.Find(group => group.Name == gname).FirstOrDefaultAsync();
+            return group == null ? null: new List<String>{ group.Id.ToString()};
+            //return group.Id.ToString("N");
+        }
+
+        public async Task AddGrpChatAsync(string groupname,Grpmsg gm)
+        {
+            var newMessage = new New
+            {
+                Id=ObjectId.GenerateNewId(),
+                SenderId = gm.senderId,
+                Message = gm.message,
+                Timestamp = gm.Timestamp
+            };
+            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);
+            var update = Builders<Group>.Update.Push(g => g.Messages, newMessage);
+            await _groo.UpdateOneAsync(filter, update);
         }
 
     }

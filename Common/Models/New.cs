@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
 
-namespace login.Common.Models
+namespace Common.Models
 {
     public class New
     {

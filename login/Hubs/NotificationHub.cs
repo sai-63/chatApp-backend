@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using login.Common.Models;
+using Common.Models;
 
 namespace login.Hubs
 {
@@ -53,9 +54,12 @@ namespace login.Hubs
 
 
         //Group SignalR
-        public async Task SendToGroup(string groupName, string senderId, Chat chat)
+        public async Task SendToGroup(string groupName, string senderId, Grpmsg group)
         {
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
+            string groupas = GetGroupName(senderId);
+            string groupNameas = GetGroupName(groupName);
+            await Clients.Group(groupas).SendAsync("ReceiveGrpMessage", senderId, group);
+            await Clients.Group(groupNameas).SendAsync("ReceiveGrpMessage", senderId, group);
         }
 
         public async Task RemoveMessageFromGroup(string groupName, string messageId, string chatDate)

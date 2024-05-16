@@ -6,7 +6,7 @@ using Service;
 using MongoDB.Bson;
 using Common.Models;
 using System.Text.RegularExpressions;
-using Group = login.Common.Models.Group;
+using Group = Common.Models.Group;
 namespace login.Controllers
 {
     [ApiController]
@@ -36,6 +36,15 @@ namespace login.Controllers
         public async Task<IActionResult> SendMessage(Chat message)
         {
             await _chatService.SendMessageAsync(message);
+            return Ok("Message sent successfully.");
+        }
+
+        //Send grp msg via signalr
+        [HttpPost]
+        [Route("SendGrpMessage")]
+        public async Task<IActionResult> SendGrpMessage(string groupname,Grpmsg messages)
+        {
+            await _groupService.SendGrpMessageAsync(groupname,messages);
             return Ok("Message sent successfully.");
         }
 
@@ -103,6 +112,14 @@ namespace login.Controllers
         }
 
         //Get all groups
+        [HttpGet]
+        [Route("Getgroupid")]
+        public async Task<IEnumerable<String>> Getgroupid(string ggname)
+        {
+            return await _groupService.GetgroupidAsync(ggname);
+            
+        }
+
         [HttpGet]
         [Route("GetAllGroups")]
         public async Task<IEnumerable<Group>> GetAllGroups()

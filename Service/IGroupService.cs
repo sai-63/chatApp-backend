@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Group = login.Common.Models.Group;
+using Group = Common.Models.Group;
 namespace Service
 {
     public interface IGroupService
@@ -22,7 +22,9 @@ namespace Service
         Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);
+        Task<IEnumerable<String>> GetgroupidAsync(string gname);
 
+        Task SendGrpMessageAsync(string groupname, Grpmsg messages);
 
     }
 }

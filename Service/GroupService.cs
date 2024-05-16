@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using Repository;
-using Group = login.Common.Models.Group;
+using Group = Common.Models.Group;
 
 namespace Service
 {
@@ -17,11 +18,14 @@ namespace Service
         {
             _groupRepository = groupRepository;
         }
-        public async Task<login.Common.Models.Group> GetGroupByNameAsync(string groupName)
+        public async Task<Common.Models.Group> GetGroupByNameAsync(string groupName)
         {
             return await _groupRepository.GetGroupByNameAsync(groupName);
         }
-
+        public async Task<IEnumerable<String>> GetgroupidAsync(string gname)
+        {
+            return await _groupRepository.GetgroupidAsync(gname);
+        }
         public async Task CreateGroupAsync(Group group)
         {
             await _groupRepository.CreateGroupAsync(group);
@@ -56,6 +60,12 @@ namespace Service
             return await _groupRepository.RemoveFromGroupAsync(j);
 
             //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
+        }
+
+
+        public async Task SendGrpMessageAsync(string groupname,Grpmsg messages)
+        {
+            await _groupRepository.AddGrpChatAsync(groupname,messages);
         }
     }
 }

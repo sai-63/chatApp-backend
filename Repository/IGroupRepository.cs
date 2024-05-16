@@ -5,7 +5,7 @@ using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.Core.Servers;
-using Group = login.Common.Models.Group;
+using Group = Common.Models.Group;
 namespace Repository
 {
     public interface IGroupRepository
@@ -17,5 +17,8 @@ namespace Repository
         Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);
+        Task<IEnumerable<String>> GetgroupidAsync(string gname);
+
+        Task AddGrpChatAsync(string groupname, Grpmsg gm);
     }
 }
