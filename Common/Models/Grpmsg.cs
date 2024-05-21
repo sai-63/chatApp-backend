@@ -12,13 +12,13 @@ namespace Common.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public ObjectId _id { get; set; }
+        public ObjectId Id { get; set; }
 
         [BsonElement("senderId")]
-        public string senderId { get; set; }
+        public required string SenderId { get; set; }
 
         [BsonElement("message")]
-        public string message { get; set; }
+        public required string Message { get; set; }
 
         [BsonElement("Timestamp")]
         public DateTime Timestamp { get; set; }

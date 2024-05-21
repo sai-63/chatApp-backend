@@ -8,13 +8,44 @@ namespace login.Hubs
 {
     public class NotificationHub : Hub
     {
+        //For storing grp connection ids
+        private static readonly Dictionary<string, List<string>> UserConnections = new Dictionary<string, List<string>>();
         public override async Task OnConnectedAsync()
         {
             string userId = Context.GetHttpContext().Request.Query["userId"];
             string groupName = GetGroupName(userId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            lock (UserConnections)
+            {
+                if (!UserConnections.ContainsKey(userId))
+                {
+                    UserConnections[userId] = new List<string>();
+                }
+                UserConnections[userId].Add(Context.ConnectionId);
+            }
+
             await base.OnConnectedAsync();
         }
+        //When user disconn
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            string userId = Context.GetHttpContext().Request.Query["userId"];
+
+            lock (UserConnections)
+            {
+                if (UserConnections.ContainsKey(userId))
+                {
+                    UserConnections[userId].Remove(Context.ConnectionId);
+                    if (UserConnections[userId].Count == 0)
+                    {
+                        UserConnections.Remove(userId);
+                    }
+                }
+            }
+
+            await base.OnDisconnectedAsync(exception);
+        }
+
 
         public async Task SendMessage(string user, string message)
         {
@@ -54,12 +85,21 @@ namespace login.Hubs
 
 
         //Group SignalR
-        public async Task SendToGroup(string groupName, string senderId, Grpmsg group)
+        public async Task JoinGroup(string groupName)
         {
-            string groupas = GetGroupName(senderId);
-            string groupNameas = GetGroupName(groupName);
-            await Clients.Group(groupas).SendAsync("ReceiveGrpMessage", senderId, group);
-            await Clients.Group(groupNameas).SendAsync("ReceiveGrpMessage", senderId, group);
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        }
+        public async Task SendToGroup(string groupid, string senderId, Grpmsg groupmsg)
+        {
+            if (UserConnections.TryGetValue(senderId, out var connectionIds))
+            {
+                foreach (var connectionId in connectionIds)
+                {
+                    await Clients.Client(connectionId).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
+                }
+            }
+            // await Groups.AddToGroupAsync(Context.ConnectionId,groupmsg.message);
+            await Clients.Group(groupid).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
         }
 
         public async Task RemoveMessageFromGroup(string groupName, string messageId, string chatDate)

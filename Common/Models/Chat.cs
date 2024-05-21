@@ -10,13 +10,13 @@ namespace login.Common.Models
         public ObjectId Id { get; set; }
 
         [BsonElement("MessageId")]
-        public String MessageId { get; set; }
+        public string MessageId { get; set; }
 
         [BsonElement("SenderId")]
-        public String SenderId { get; set; }
+        public string SenderId { get; set; }
 
         [BsonElement("ReceiverId")]
-        public String ReceiverId { get; set; }
+        public string ReceiverId { get; set; }
 
         [BsonElement("Message")]
         public string Message { get; set; }

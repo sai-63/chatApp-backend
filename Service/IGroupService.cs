@@ -19,10 +19,10 @@ namespace Service
         Task<IEnumerable<Group>> GetAllGroups();
         //Task<IEnumerable<Group>> GetUserGroupsAsync(string userId);
 
-        Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
-        Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname);
+        Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
+        Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);
-        Task<IEnumerable<String>> GetgroupidAsync(string gname);
+        Task<IEnumerable<string>> GetgroupidAsync(string gname);
 
         Task SendGrpMessageAsync(string groupname, Grpmsg messages);
 

@@ -15,12 +15,12 @@ namespace Common.Models
         public ObjectId Id { get; set; }
 
         [BsonElement("name")]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         [BsonElement("users")]
-        public List<string> Users { get; set; }
+        public required List<string> Users { get; set; }
 
         [BsonElement("messages")]
-        public List<New> Messages { get; set; }
+        public required List<Grpmsg> Messages { get; set; }
     }
 }

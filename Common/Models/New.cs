@@ -18,7 +18,7 @@ namespace Common.Models
         [BsonElement("message")]
         public string Message { get; set; }
 
-        [BsonElement("Timestamp")]
+        [BsonElement("timestamp")]
         public DateTime Timestamp { get; set; }
 
 

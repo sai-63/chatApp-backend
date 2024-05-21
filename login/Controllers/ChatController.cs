@@ -138,7 +138,7 @@ namespace login.Controllers
 
         [HttpGet]
         [Route("GetGroupMessages")]
-        public async Task<ActionResult<IEnumerable<New>>> GetGroupMessages(string groupname)
+        public async Task<ActionResult<IEnumerable<Grpmsg>>> GetGroupMessages(string groupname)
         {
             //if (string.IsNullOrWhiteSpace(groupid))
             //{

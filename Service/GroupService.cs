@@ -22,7 +22,7 @@ namespace Service
         {
             return await _groupRepository.GetGroupByNameAsync(groupName);
         }
-        public async Task<IEnumerable<String>> GetgroupidAsync(string gname)
+        public async Task<IEnumerable<string>> GetgroupidAsync(string gname)
         {
             return await _groupRepository.GetgroupidAsync(gname);
         }
@@ -46,12 +46,12 @@ namespace Service
         //{
         //  return await _groupRepository.GetUserGroupsAsync(userId);
         //}
-        public async Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname)
+        public async Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname)
         {
             return await _groupRepository.GetGroupMessagesAsync(groupname);
         }
 
-        public async Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname)
+        public async Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname)
         {
             return await _groupRepository.GetUsersOfGroupAsync(groupname);
         }

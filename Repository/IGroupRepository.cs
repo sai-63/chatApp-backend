@@ -14,10 +14,10 @@ namespace Repository
         Task CreateGroupAsync(Group group);
         Task<bool> AddUsersToGroupAsync(Joingrp j);
         Task<IEnumerable<Group>> GetAllGroupsAsync();
-        Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname);
-        Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname);
+        Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
+        Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);
-        Task<IEnumerable<String>> GetgroupidAsync(string gname);
+        Task<IEnumerable<string>> GetgroupidAsync(string gname);
 
         Task AddGrpChatAsync(string groupname, Grpmsg gm);
     }

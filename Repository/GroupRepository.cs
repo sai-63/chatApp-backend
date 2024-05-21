@@ -78,7 +78,7 @@ namespace Repository
         //  var filter = Builders<Group>.Filter.Eq(c => c.Name, groupname);
         //return await _groo.Find(filter).ToListAsync();
         //}
-        public async Task<IEnumerable<New>> GetGroupMessagesAsync(string groupname)
+        public async Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname)
         {
             var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);
             var group = await _groo.Find(filter).FirstOrDefaultAsync();
@@ -87,18 +87,18 @@ namespace Repository
             if (group != null)
             {
                 // Transform Group messages into a list of Message objects
-                var messages = group.Messages.Select(msg => new New
+                var messages = group.Messages.Select(msg => new Grpmsg
                 {
                     SenderId = msg.SenderId,
                     Message = msg.Message
                 }).ToList();
 
-                return messages;
+                return group.Messages;
             }
             else
             {
                 // Group not found, return an empty list
-                return new List<New>();
+                return new List<Grpmsg>();
             }
         }
 
@@ -141,26 +141,27 @@ namespace Repository
 
             //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
         }
-        public async Task<IEnumerable<String>> GetgroupidAsync(string gname)
+        public async Task<IEnumerable<string>> GetgroupidAsync(string gname)
         {
             var group = await _groo.Find(group => group.Name == gname).FirstOrDefaultAsync();
-            return group == null ? null: new List<String>{ group.Id.ToString()};
+            return group == null ? null : new List<string> { group.Id.ToString() };
             //return group.Id.ToString("N");
         }
 
         public async Task AddGrpChatAsync(string groupname,Grpmsg gm)
         {
-            var newMessage = new New
+            var newMessage = new Grpmsg
             {
                 Id=ObjectId.GenerateNewId(),
-                SenderId = gm.senderId,
-                Message = gm.message,
-                Timestamp = gm.Timestamp
+                SenderId = gm.SenderId,
+                Message = gm.Message,
+                Timestamp = DateTime.UtcNow
             };
-            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);
+            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);        
             var update = Builders<Group>.Update.Push(g => g.Messages, newMessage);
             await _groo.UpdateOneAsync(filter, update);
         }
+        
 
     }
 }
