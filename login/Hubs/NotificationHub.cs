@@ -63,6 +63,7 @@ namespace login.Hubs
         public async Task SendToOwnGroup(string senderId,Chat chat)
         {
             string groupName = GetGroupName(senderId);
+
             await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
         }
 
