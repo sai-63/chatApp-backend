@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using login.Common.Models;
+using MongoDB.Bson;
 using MongoDB.Driver;
 
 namespace Repository
@@ -9,7 +10,7 @@ namespace Repository
     {
         private readonly IMongoCollection<Chat> _collection;
 
-        public ChatRepository(IMongoClient client, string databaseName, string collectionName)
+        public ChatRepository(IMongoClient client, String databaseName, String collectionName)
         {
             var database = client.GetDatabase(databaseName);
             _collection = database.GetCollection<Chat>(collectionName);
@@ -22,11 +23,10 @@ namespace Repository
 
         public async Task AddChatAsync(Chat chat)
         {
-            chat.Timestamp = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1)).TotalSeconds;
             await _collection.InsertOneAsync(chat);
         }
 
-        public async Task<IEnumerable<Chat>> getIndividualChats(string senderId, string receiverId)
+        public async Task<IEnumerable<Chat>> getIndividualChats(String senderId, String receiverId)
         {
             var filter = Builders<Chat>.Filter.Or(
                 Builders<Chat>.Filter.And(
@@ -40,6 +40,22 @@ namespace Repository
             );
 
             return await _collection.Find(filter).ToListAsync();
+        }
+
+        public async Task<bool> DeleteChatAsync(string id)
+        {
+            try
+            {
+                var filter = Builders<Chat>.Filter.Eq("MessageId", id);
+                var result = await _collection.DeleteOneAsync(filter);
+                return result.DeletedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log error)
+                Console.WriteLine("Error deleting chat: " + ex.Message);
+                return false;
+            }
         }
 
 
