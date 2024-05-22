@@ -42,11 +42,11 @@ namespace Repository
             return await _collection.Find(filter).ToListAsync();
         }
 
-        public async Task<bool> DeleteChatAsync(string id)
+        public async Task<bool> DeleteChatAsync(string messageId)
         {
             try
             {
-                var filter = Builders<Chat>.Filter.Eq("MessageId", id);
+                var filter = Builders<Chat>.Filter.Eq("MessageId", messageId);
                 var result = await _collection.DeleteOneAsync(filter);
                 return result.DeletedCount > 0;
             }
@@ -56,6 +56,31 @@ namespace Repository
                 Console.WriteLine("Error deleting chat: " + ex.Message);
                 return false;
             }
+        }
+
+        public async Task<bool> EditChatAsync(string messageId,string newMessage)
+        {
+            try
+            {
+                var filter = Builders<Chat>.Filter.Eq("MessageId", messageId);
+                var update = Builders<Chat>.Update.Set("Message", newMessage);
+                var result = await _collection.UpdateOneAsync(filter, update);
+                return result.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log error)
+                Console.WriteLine("Error updating chat message: " + ex.Message);
+                return false;
+            }
+        }
+
+        public async Task MarkAsReadAsync(List<String> messageIds)
+        {
+            var filter = Builders<Chat>.Filter.In(chat => chat.MessageId, messageIds);
+            var update = Builders<Chat>.Update.Set(chat => chat.IsRead, true);
+
+            await _collection.UpdateManyAsync(filter, update);
         }
 
 

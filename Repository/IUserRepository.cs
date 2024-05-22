@@ -10,9 +10,9 @@ namespace Repository
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByUsernameAsync(string username);
         Task AddUserAsync(User user);
-        Task<List<User>> GetAllUsersAsync(string id);
+        Task<List<User>> GetAllUsersAsync(string username);
         Task<bool> addFriendAsync(string userId,string friendId);
         Task<bool> isFriendAsync(string userId, string friendId);
-        Task<List<User>> GetAllFriendsAsync(string id);
+        Task<List<User>> GetAllFriendsAsync(string userId);
     }
 }

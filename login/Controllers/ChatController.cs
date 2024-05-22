@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using login.Common.Models;
 using Service;
 using MongoDB.Bson;
-using Common.Models;
 
 namespace login.Controllers
 {
@@ -28,10 +27,57 @@ namespace login.Controllers
 
         [HttpPost]
         [Route("Send Message")]
-        public async Task<IActionResult> SendMessage(Chat message)
+        public async Task<IActionResult> SendMessage([FromForm] Chatform fd)
         {
-            await _chatService.SendMessageAsync(message);
+            Chat message = new Chat();
+            //message.Id = fd.Id;
+            message.SenderId = fd.SenderId;
+            message.ReceiverId = fd.ReceiverId;
+            message.Message = fd.Message;
+            message.MessageId = fd.MessageId;
+            message.Timestamp = fd.Timestamp;
+
+
+            if (fd.File != null)
+            {
+                await _chatService.SendMessageWithFileAsync(message,fd.File);
+            }
+            else
+            {
+                await _chatService.SendMessageAsync(message);
+            }
+
+            
             return Ok("Message sent successfully.");
+        }
+
+        [HttpPost]
+        [Route("DownloadFile")]
+        public async Task<IActionResult> DownloadFile([FromBody] Chat chatMessage)
+        {
+            try
+            {
+                if (chatMessage == null)
+                {
+                    return BadRequest("Chat message data is missing.");
+                }
+
+                // Check if the message has file content
+                if (chatMessage.FileContent == null)
+                {
+                    return BadRequest("Message does not contain file content.");
+                }
+
+                // Determine the content type based on the file type
+
+
+                // Return the file content with the appropriate content type
+                return File(chatMessage.FileContent, chatMessage.FileType, chatMessage.FileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
         }
 
         [HttpGet]
@@ -45,14 +91,33 @@ namespace login.Controllers
 
         [HttpPost]
         [Route("DeleteMessage")]
-        public async Task<IActionResult> DeleteMessage(String id)
+        public async Task<IActionResult> DeleteMessage(String messageId)
         {
-            var result = await _chatService.DeleteMessageAsync(id);
+            var result = await _chatService.DeleteMessageAsync(messageId);
             if (result)
             {
                 return Ok("Message deleted successfully.");
             }
             return BadRequest("Couldn't delete");
+        }
+
+        [HttpPost]
+        [Route("EditMessage")]
+        public async Task<IActionResult> EditMessage(String messageId,String newMessage)
+        {
+            var result = await _chatService.EditMessageAsync(messageId, newMessage);
+            if (result)
+            {
+                return Ok("Message edited successfully.");
+            }
+            return BadRequest("Couldn't edit");
+        }
+
+        [HttpPost("markasread")]
+        public async Task<IActionResult> MarkAsRead(List<String> messageIds)
+        {
+            await _chatService.MarkAsRead(messageIds);
+            return Ok();
         }
 
 

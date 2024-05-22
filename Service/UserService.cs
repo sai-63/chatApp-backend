@@ -52,9 +52,9 @@ namespace Service
             return true;
         }
 
-        public async Task<List<User>> getAllUsersAsync(string id)
+        public async Task<List<User>> getAllUsersAsync(string username)
         {
-            return await _userRepository.GetAllUsersAsync(id);
+            return await _userRepository.GetAllUsersAsync(username);
         }
 
         public async Task<string> getUserIdAsync(string username)
@@ -73,9 +73,9 @@ namespace Service
             return false;
         }
 
-        public async Task<List<User>> getAllFriendsAsync(string id)
+        public async Task<List<User>> getAllFriendsAsync(string userId)
         {
-            return await _userRepository.GetAllFriendsAsync(id);
+            return await _userRepository.GetAllFriendsAsync(userId);
         }
 
         public async Task<bool> IsFriend(string userId, string friendId)
