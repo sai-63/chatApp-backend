@@ -30,9 +30,9 @@ namespace Repository
             await _collection.InsertOneAsync(user);
         }
 
-        public async Task<List<User>> GetAllUsersAsync(string id)
+        public async Task<List<User>> GetAllUsersAsync(string username)
         {
-            return await _collection.Find(e => e.Id != id).ToListAsync();
+            return await _collection.Find(e => e.Username != username).ToListAsync();
         }
 
         public async Task<bool> addFriendAsync(string userId, string friendId)
@@ -53,10 +53,10 @@ namespace Repository
             return false;
         }
 
-        public async Task<List<User>> GetAllFriendsAsync(string id)
+        public async Task<List<User>> GetAllFriendsAsync(string userId)
         {
             // Assuming _collection is your MongoDB collection
-            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
             var user = await _collection.Find(filter).FirstOrDefaultAsync();
 
             if (user == null)

@@ -28,12 +28,6 @@ namespace login.Hubs
             await Clients.Group(mygroupName).SendAsync("ReceiveMessage", senderId, chat);
         }
 
-        public async Task SendToOwnGroup(string senderId,Chat chat)
-        {
-            string groupName = GetGroupName(senderId);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
-        }
-
         public async Task RemoveMessage(string receiverId,string messageId,string chatDate)
         {
             // Perform deletion logic here, e.g., remove message from data store
@@ -44,6 +38,24 @@ namespace login.Hubs
             string mygroupName = GetGroupName(userId);
             await Clients.Group(groupName).SendAsync("MessageRemoved", messageId,chatDate);
             await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId,chatDate);
+        }
+
+        public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate)
+        {
+            // Perform deletion logic here, e.g., remove message from data store
+
+            // Broadcast message removal to all clients
+            string userId = Context.GetHttpContext().Request.Query["userId"];
+            string groupName = GetGroupName(receiverId);
+            string mygroupName = GetGroupName(userId);
+            await Clients.Group(groupName).SendAsync("MessageEdited", messageId, newMessage, chatDate);
+            await Clients.Group(mygroupName).SendAsync("MessageEdited", messageId, newMessage, chatDate);
+        }
+
+        public async Task MarkAsRead(string receiverId,List<string> messageIds)
+        {
+            string groupName = GetGroupName(receiverId);
+            await Clients.Group(groupName).SendAsync("MessageRead", messageIds);
         }
 
         private string GetGroupName(string userId)

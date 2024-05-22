@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Service;
 using login.Common.Models;
 using MongoDB.Bson;
-using Common.Models;
 
 namespace login.Controllers
 {
@@ -51,9 +50,9 @@ namespace login.Controllers
 
         [HttpGet]
         [Route("GetOtherUsers")]
-        public async Task<ActionResult<List<User>>> GetUsers(string id)
+        public async Task<ActionResult<List<User>>> GetUsers(string username)
         {
-            return await _userService.getAllUsersAsync(id);
+            return await _userService.getAllUsersAsync(username);
         }
 
         [HttpPost]
@@ -76,9 +75,9 @@ namespace login.Controllers
 
         [HttpGet]
         [Route("GetFriends")]
-        public async Task<ActionResult<List<User>>> GetFriends(string id)
+        public async Task<ActionResult<List<User>>> GetFriends(string userId)
         {
-            return await _userService.getAllFriendsAsync(id);
+            return await _userService.getAllFriendsAsync(userId);
         }
 
     }

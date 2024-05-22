@@ -10,8 +10,10 @@ namespace Repository
     {
         Task<IEnumerable<Chat>> getAllChatsAsync();
         Task AddChatAsync(Chat chat);
-        Task<bool> DeleteChatAsync(string id);
+        Task<bool> DeleteChatAsync(string messageId);
+        Task<bool> EditChatAsync(string messageId,string newMessage);
         // Other method signatures as needed
         Task<IEnumerable<Chat>> getIndividualChats(String senderId, String receiverId);
+        Task MarkAsReadAsync(List<string> messageIds);
     }
 }
