@@ -87,5 +87,14 @@ namespace Service
             }
             return false;
         }
+
+        public async Task setUserOnline(string userName)
+        {
+            await _userRepository.setUserOnlineAsync(userName);
+        }
+        public async Task setUserOffline(string userName)
+        {
+            await _userRepository.setUserOfflineAsync(userName);
+        }
     }
 }

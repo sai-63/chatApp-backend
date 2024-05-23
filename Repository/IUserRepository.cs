@@ -14,5 +14,7 @@ namespace Repository
         Task<bool> addFriendAsync(string userId,string friendId);
         Task<bool> isFriendAsync(string userId, string friendId);
         Task<List<User>> GetAllFriendsAsync(string userId);
+        Task setUserOnlineAsync(string userName);
+        Task setUserOfflineAsync(string userName);
     }
 }

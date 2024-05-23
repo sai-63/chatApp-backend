@@ -102,6 +102,18 @@ namespace login.Controllers
         }
 
         [HttpPost]
+        [Route("DeleteMessageForMe")]
+        public async Task<IActionResult> DeleteMessageForMe(String messageId)
+        {
+            var result = await _chatService.DeleteMessageForMeAsync(messageId);
+            if (result)
+            {
+                return Ok("Message deleted successfully.");
+            }
+            return BadRequest("Couldn't delete");
+        }
+
+        [HttpPost]
         [Route("EditMessage")]
         public async Task<IActionResult> EditMessage(String messageId,String newMessage)
         {
@@ -115,7 +127,7 @@ namespace login.Controllers
 
         [HttpPost("markasread")]
         public async Task<IActionResult> MarkAsRead(List<String> messageIds)
-        {
+            {
             await _chatService.MarkAsRead(messageIds);
             return Ok();
         }

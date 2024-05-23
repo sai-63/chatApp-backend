@@ -83,6 +83,14 @@ namespace Repository
             await _collection.UpdateManyAsync(filter, update);
         }
 
+        public async Task<bool> DeleteChatForMeAsync(string messageId)
+        {
+            var filter = Builders<Chat>.Filter.Eq("MessageId", messageId);
+            var update = Builders<Chat>.Update.Set("SenderRemoved", true);
+            var result = await _collection.UpdateOneAsync(filter, update);
+            return result.ModifiedCount > 0;
+        }
+
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
     }

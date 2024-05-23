@@ -80,5 +80,21 @@ namespace login.Controllers
             return await _userService.getAllFriendsAsync(userId);
         }
 
+        [HttpPost]
+        [Route("UserOnline")]
+        public async Task<ActionResult> SetUserOnline(string userName)
+        {
+            await _userService.setUserOnline(userName);
+            return Ok("User Online");
+        }
+            
+        [HttpPost]
+        [Route("UserOffline")]
+        public async Task<ActionResult> SetUserOffline(string userName)
+        {
+            await _userService.setUserOffline(userName);
+            return Ok("User Offline");
+        }
+
     }
 }

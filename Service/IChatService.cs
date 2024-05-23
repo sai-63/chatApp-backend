@@ -15,6 +15,7 @@ namespace Service
         Task SendMessageAsync(Chat message);
         Task SendMessageWithFileAsync(Chat message, IFormFile file);
         Task<bool> DeleteMessageAsync(string messageId);
+        Task<bool> DeleteMessageForMeAsync(string messageId);
         Task<bool> EditMessageAsync(string messageId,string newMessage);
         // Other method signatures as needed
         Task<IDictionary<string, List<Chat>>> getIndividualMessages(String senderId, String receiverId);
