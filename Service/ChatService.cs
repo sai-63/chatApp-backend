@@ -21,6 +21,11 @@ namespace Service
             return await _chatRepository.DeleteChatAsync(messageId);
         }
 
+        public async Task<bool> DeleteMessageForMeAsync(string messageId)
+        {
+            return await _chatRepository.DeleteChatForMeAsync(messageId);
+        }
+
         public async Task<bool> EditMessageAsync(string messageId, string newMessage)
         {
             return await _chatRepository.EditChatAsync(messageId,newMessage);
@@ -35,7 +40,11 @@ namespace Service
         {
             var chats = await _chatRepository.getIndividualChats(senderId, receiverId);
 
-            var groupedChats = chats
+            var filteredChats = chats
+                .Where(chat => !(chat.SenderId == senderId && chat.SenderRemoved) || chat.SenderId == receiverId)
+                .ToList();
+
+            var groupedChats = filteredChats
                 .GroupBy(chat => chat.Timestamp.Date) // Group by date
                 .ToDictionary(
                     group => group.Key.ToString("yyyy-MM-dd"), // Use the date as a key in the desired format
@@ -44,6 +53,7 @@ namespace Service
 
             return groupedChats;
         }
+
 
         public async Task MarkAsRead(List<String> messageIds)
         {

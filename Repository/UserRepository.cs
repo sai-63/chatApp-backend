@@ -85,5 +85,18 @@ namespace Repository
             return user != null;
         }
 
+        public async Task setUserOnlineAsync(string userName)
+        {
+            var filter = Builders<User>.Filter.Eq("Username", userName);
+            var update = Builders<User>.Update.Set("IsOnline", true);
+            await _collection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task setUserOfflineAsync(string userName)
+        {
+            var filter = Builders<User>.Filter.Eq("Username", userName);
+            var update = Builders<User>.Update.Set("IsOnline", false);
+            await _collection.UpdateOneAsync(filter, update);
+        }
     }
 }

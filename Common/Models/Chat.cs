@@ -25,8 +25,8 @@ namespace login.Common.Models
         [BsonElement("IsRead")]
         public bool IsRead { get; set; }
 
-        //[BsonElement("SenderRemoved")]
-        //public bool SenderRemoved { get; set; }
+        [BsonElement("SenderRemoved")]
+        public bool SenderRemoved { get; set; }
 
         [BsonElement("FileName")]
         public string? FileName { get; set; } // File name
@@ -77,8 +77,14 @@ namespace login.Common.Models
         [BsonElement("Nickname")]
         public string Nickname { get; set; }
 
+        [BsonElement("IsOnline")]
+        public bool IsOnline { get; set; }
+
         [BsonElement("Friends")]
         public List<string> Friends { get; set; }
+
+        //[BsonElement("UnseenMessages")]
+        //public Dictionary<string,int> UnseenMessages { get; set; }
 
     }
 
