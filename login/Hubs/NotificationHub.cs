@@ -97,6 +97,12 @@ namespace login.Hubs
             await Clients.Group(groupName).SendAsync("IncrementUnseenMessages",username,seen);
         }
 
+        public async Task SortChats(string receiverId,string username,string timestamp)
+        {
+            string groupName = GetGroupName(receiverId);
+            await Clients.Group(groupName).SendAsync("SortChats",username,timestamp);
+        }
+
         private string GetGroupName(string userId)
         {
             return $"User_{userId}";
