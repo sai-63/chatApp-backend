@@ -92,11 +92,13 @@ namespace Repository
             await _collection.UpdateOneAsync(filter, update);
         }
 
-        public async Task setUserOfflineAsync(string userName)
+        public async Task setUserOfflineAsync(string userName, DateTime time)
         {
             var filter = Builders<User>.Filter.Eq("Username", userName);
-            var update = Builders<User>.Update.Set("IsOnline", false);
-            await _collection.UpdateOneAsync(filter, update);
+            var updateIsOnline = Builders<User>.Update.Set("IsOnline", false);
+            var updateLastSeen = Builders<User>.Update.Set("LastSeen", time);
+            await _collection.UpdateOneAsync(filter, updateIsOnline);
+            await _collection.UpdateOneAsync(filter, updateLastSeen);
         }
     }
 }

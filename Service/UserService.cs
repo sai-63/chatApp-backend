@@ -23,32 +23,22 @@ namespace Service
             return user;
         }
 
-        public async Task<bool> SignupAsync(string username, string email, string password, string nickname, List<string> friends)
+        public async Task<bool> SignupAsync(User user)
         {
             // Check if username or email already exists
-            var existingUser = await _userRepository.GetUserByUsernameAsync(username);
+            var existingUser = await _userRepository.GetUserByUsernameAsync(user.Username);
             if (existingUser != null)
             {
                 return false; // Username already exists
             }
 
-            existingUser = await _userRepository.GetUserByEmailAsync(email);
+            existingUser = await _userRepository.GetUserByEmailAsync(user.Email);
             if (existingUser != null)
             {
                 return false; // Email already exists
             }
 
-            // Create new user
-            var newUser = new User
-            {
-                Username = username,
-                Email = email,
-                Password = password, // You should hash the password before storing it
-                Nickname = nickname,
-                Friends = friends
-            };
-
-            await _userRepository.AddUserAsync(newUser);
+            await _userRepository.AddUserAsync(user);
             return true;
         }
 
@@ -92,9 +82,9 @@ namespace Service
         {
             await _userRepository.setUserOnlineAsync(userName);
         }
-        public async Task setUserOffline(string userName)
+        public async Task setUserOffline(string userName,DateTime time)
         {
-            await _userRepository.setUserOfflineAsync(userName);
+            await _userRepository.setUserOfflineAsync(userName,time);
         }
     }
 }

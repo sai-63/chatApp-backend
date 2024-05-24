@@ -80,6 +80,9 @@ namespace login.Common.Models
         [BsonElement("IsOnline")]
         public bool IsOnline { get; set; }
 
+        [BsonElement("LastSeen")]
+        public DateTime LastSeen { get; set; }
+
         [BsonElement("Friends")]
         public List<string> Friends { get; set; }
 

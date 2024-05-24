@@ -86,9 +86,9 @@ namespace login.Hubs
             await Clients.All.SendAsync("UserOnline", username);
         }
 
-        public async Task UserOffline(string username)
+        public async Task UserOffline(string username,DateTime time)
         {
-            await Clients.All.SendAsync("UserOffline", username);
+            await Clients.All.SendAsync("UserOffline", username, time);
         }
 
         public async Task IncrementUnseenMessages(string receiverId,string username,string seen = null)

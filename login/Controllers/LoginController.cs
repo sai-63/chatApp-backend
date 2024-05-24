@@ -32,7 +32,7 @@ namespace login.Controllers
         [Route("SignUp")]
         public async Task<ActionResult> Signup([FromBody] User user)
         {
-            var result = await _userService.SignupAsync(user.Username, user.Email, user.Password,user.Nickname,user.Friends);
+            var result = await _userService.SignupAsync(user);
             if (result)
             {
                 return Ok("User signed up successfully.");
@@ -90,9 +90,9 @@ namespace login.Controllers
             
         [HttpPost]
         [Route("UserOffline")]
-        public async Task<ActionResult> SetUserOffline(string userName)
+        public async Task<ActionResult> SetUserOffline(string userName,DateTime time)
         {
-            await _userService.setUserOffline(userName);
+            await _userService.setUserOffline(userName,time);
             return Ok("User Offline");
         }
 
