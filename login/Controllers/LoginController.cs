@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Service;
 using login.Common.Models;
 using MongoDB.Bson;
-using Common.Models;
 
 namespace login.Controllers
 {
@@ -33,7 +32,7 @@ namespace login.Controllers
         [Route("SignUp")]
         public async Task<ActionResult> Signup([FromBody] User user)
         {
-            var result = await _userService.SignupAsync(user.Username, user.Email, user.Password);
+            var result = await _userService.SignupAsync(user.Username, user.Email, user.Password, user.Nickname, user.Friends);
             if (result)
             {
                 return Ok("User signed up successfully.");
@@ -51,9 +50,9 @@ namespace login.Controllers
 
         [HttpGet]
         [Route("GetOtherUsers")]
-        public async Task<ActionResult<List<User>>> GetUsers(string id)
+        public async Task<ActionResult<List<User>>> GetUsers(string username)
         {
-            return await _userService.getAllUsersAsync(id);
+            return await _userService.getAllUsersAsync(username);
         }
 
         [HttpPost]
@@ -61,12 +60,12 @@ namespace login.Controllers
         public async Task<ActionResult> AddFriend(Friend friend)
         {
             var check = await _userService.IsFriend(friend.userId, friend.friendId);
-            if(check)
+            if (check)
             {
                 return Ok("Already a friend");
             }
 
-            var result = await _userService.addFriend(friend.userId,friend.friendId);
+            var result = await _userService.addFriend(friend.userId, friend.friendId);
             if (result)
             {
                 return Ok("Friend added successfully.");
@@ -76,9 +75,25 @@ namespace login.Controllers
 
         [HttpGet]
         [Route("GetFriends")]
-        public async Task<ActionResult<List<User>>> GetFriends(string id)
+        public async Task<ActionResult<List<User>>> GetFriends(string userId)
         {
-            return await _userService.getAllFriendsAsync(id);
+            return await _userService.getAllFriendsAsync(userId);
+        }
+
+        [HttpPost]
+        [Route("UserOnline")]
+        public async Task<ActionResult> SetUserOnline(string userName)
+        {
+            await _userService.setUserOnline(userName);
+            return Ok("User Online");
+        }
+
+        [HttpPost]
+        [Route("UserOffline")]
+        public async Task<ActionResult> SetUserOffline(string userName)
+        {
+            await _userService.setUserOffline(userName);
+            return Ok("User Offline");
         }
 
     }

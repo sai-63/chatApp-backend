@@ -1,5 +1,4 @@
-﻿using Common.Models;
-using login.Common.Models;
+﻿using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
 using System;
@@ -8,23 +7,21 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Group = Common.Models.Group;
 namespace Service
 {
     public interface IGroupService
     {
-        Task<Group> GetGroupByNameAsync(string groupName);
-        Task CreateGroupAsync(Group group);
+        Task<Grp> GetGroupByNameAsync(string groupName);
+        Task CreateGroupAsync(Grp group);
         Task<bool> AddUsersToGroupAsync(Joingrp j);
-        Task<IEnumerable<Group>> GetAllGroups();
+        Task<IEnumerable<Grp>> GetAllGroups();
         //Task<IEnumerable<Group>> GetUserGroupsAsync(string userId);
 
         Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);
         Task<IEnumerable<string>> GetgroupidAsync(string gname);
-
         Task SendGrpMessageAsync(string groupname, Grpmsg messages);
-
+        Task<bool> EditGMessageAsync(string groupname, string messageId, string newMessage);
     }
 }

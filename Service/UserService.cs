@@ -23,7 +23,7 @@ namespace Service
             return user;
         }
 
-        public async Task<bool> SignupAsync(string username, string email, string password)
+        public async Task<bool> SignupAsync(string username, string email, string password, string nickname, List<string> friends)
         {
             // Check if username or email already exists
             var existingUser = await _userRepository.GetUserByUsernameAsync(username);
@@ -43,16 +43,18 @@ namespace Service
             {
                 Username = username,
                 Email = email,
-                Password = password // You should hash the password before storing it
+                Password = password, // You should hash the password before storing it
+                Nickname = nickname,
+                Friends = friends
             };
 
             await _userRepository.AddUserAsync(newUser);
             return true;
         }
 
-        public async Task<List<User>> getAllUsersAsync(string id)
+        public async Task<List<User>> getAllUsersAsync(string username)
         {
-            return await _userRepository.GetAllUsersAsync(id);
+            return await _userRepository.GetAllUsersAsync(username);
         }
 
         public async Task<string> getUserIdAsync(string username)
@@ -63,7 +65,7 @@ namespace Service
 
         public async Task<bool> addFriend(string userId, string friendId)
         {
-            var result = await _userRepository.addFriendAsync(userId,friendId);
+            var result = await _userRepository.addFriendAsync(userId, friendId);
             if (result)
             {
                 return true;
@@ -71,19 +73,28 @@ namespace Service
             return false;
         }
 
-        public async Task<List<User>> getAllFriendsAsync(string id)
+        public async Task<List<User>> getAllFriendsAsync(string userId)
         {
-            return await _userRepository.GetAllFriendsAsync(id);
+            return await _userRepository.GetAllFriendsAsync(userId);
         }
 
         public async Task<bool> IsFriend(string userId, string friendId)
         {
-            var check= await _userRepository.isFriendAsync(userId, friendId);
+            var check = await _userRepository.isFriendAsync(userId, friendId);
             if (check)
             {
                 return true;
             }
             return false;
+        }
+
+        public async Task setUserOnline(string userName)
+        {
+            await _userRepository.setUserOnlineAsync(userName);
+        }
+        public async Task setUserOffline(string userName)
+        {
+            await _userRepository.setUserOfflineAsync(userName);
         }
     }
 }

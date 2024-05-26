@@ -2,50 +2,41 @@
 using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 using login.Common.Models;
-using Common.Models;
 
 namespace login.Hubs
 {
     public class NotificationHub : Hub
     {
-        //For storing grp connection ids
-        private static readonly Dictionary<string, List<string>> UserConnections = new Dictionary<string, List<string>>();
         public override async Task OnConnectedAsync()
         {
             string userId = Context.GetHttpContext().Request.Query["userId"];
             string groupName = GetGroupName(userId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-            lock (UserConnections)
-            {
-                if (!UserConnections.ContainsKey(userId))
-                {
-                    UserConnections[userId] = new List<string>();
-                }
-                UserConnections[userId].Add(Context.ConnectionId);
-            }
-
             await base.OnConnectedAsync();
         }
-        //When user disconn
-        public override async Task OnDisconnectedAsync(Exception exception)
+
+        public async Task UserClosingTab()
         {
-            string userId = Context.GetHttpContext().Request.Query["userId"];
+            var connectionId = Context.ConnectionId;
 
-            lock (UserConnections)
-            {
-                if (UserConnections.ContainsKey(userId))
-                {
-                    UserConnections[userId].Remove(Context.ConnectionId);
-                    if (UserConnections[userId].Count == 0)
-                    {
-                        UserConnections.Remove(userId);
-                    }
-                }
-            }
-
-            await base.OnDisconnectedAsync(exception);
+            // Perform necessary actions, e.g., update user status, log the event, etc.
+            await HandleUserDisconnectAsync(connectionId);
         }
 
+        private Task HandleUserDisconnectAsync(string connectionId)
+        {
+            // Your logic to handle the user disconnection
+            // For example, updating the user's status in the database
+            // or notifying other users about this disconnection
+            return Task.CompletedTask;
+        }
+
+        public override async Task OnDisconnectedAsync(Exception exception)
+        {
+            // Handle the disconnect event when it occurs
+            await HandleUserDisconnectAsync(Context.ConnectionId);
+            await base.OnDisconnectedAsync(exception);
+        }
 
         public async Task SendMessage(string user, string message)
         {
@@ -56,18 +47,11 @@ namespace login.Hubs
         {
             string groupName = GetGroupName(receiverId);
             string mygroupName = GetGroupName(senderId);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
-            await Clients.Group(mygroupName).SendAsync("ReceiveMessage", senderId, chat);
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", chat);
+            await Clients.Group(mygroupName).SendAsync("ReceiveMessage", chat);
         }
 
-        public async Task SendToOwnGroup(string senderId,Chat chat)
-        {
-            string groupName = GetGroupName(senderId);
-
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", senderId, chat);
-        }
-
-        public async Task RemoveMessage(string receiverId,string messageId,string chatDate)
+        public async Task RemoveMessage(string receiverId, string messageId, string chatDate)
         {
             // Perform deletion logic here, e.g., remove message from data store
 
@@ -75,40 +59,53 @@ namespace login.Hubs
             string userId = Context.GetHttpContext().Request.Query["userId"];
             string groupName = GetGroupName(receiverId);
             string mygroupName = GetGroupName(userId);
-            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId,chatDate);
-            await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId,chatDate);
+            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
+            await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId, chatDate);
+        }
+
+        public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate)
+        {
+            // Perform deletion logic here, e.g., remove message from data store
+
+            // Broadcast message removal to all clients
+            string userId = Context.GetHttpContext().Request.Query["userId"];
+            string groupName = GetGroupName(receiverId);
+            string mygroupName = GetGroupName(userId);
+            await Clients.Group(groupName).SendAsync("MessageEdited", messageId, newMessage, chatDate);
+            await Clients.Group(mygroupName).SendAsync("MessageEdited", messageId, newMessage, chatDate);
+        }
+
+        public async Task MarkAsRead(string receiverId, List<string> messageIds)
+        {
+            string groupName = GetGroupName(receiverId);
+            await Clients.Group(groupName).SendAsync("MessageRead", messageIds);
+        }
+
+        public async Task UserOnline(string username)
+        {
+            await Clients.All.SendAsync("UserOnline", username);
+        }
+
+        public async Task UserOffline(string username)
+        {
+            await Clients.All.SendAsync("UserOffline", username);
+        }
+
+        public async Task IncrementUnseenMessages(string receiverId, string username, string seen = null)
+        {
+            string groupName = GetGroupName(receiverId);
+            await Clients.Group(groupName).SendAsync("IncrementUnseenMessages", username, seen);
+        }
+
+        public async Task SortChats(string receiverId, string username, string timestamp)
+        {
+            string groupName = GetGroupName(receiverId);
+            await Clients.Group(groupName).SendAsync("SortChats", username, timestamp);
         }
 
         private string GetGroupName(string userId)
         {
             return $"User_{userId}";
-        }
-
-
-        //Group SignalR
-        public async Task JoinGroup(string groupName)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
-        }
-        public async Task SendToGroup(string groupid, string senderId, Grpmsg groupmsg)
-        {
-            if (UserConnections.TryGetValue(senderId, out var connectionIds))
-            {
-                foreach (var connectionId in connectionIds)
-                {
-                    await Clients.Client(connectionId).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
-                }
-            }
-            // await Groups.AddToGroupAsync(Context.ConnectionId,groupmsg.message);
-            await Clients.Group(groupid).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
-        }
-
-        public async Task RemoveMessageFromGroup(string groupName, string messageId, string chatDate)
-        {
-            // Perform deletion logic here, e.g., remove message from data store
-
-            // Broadcast message removal to all clients in the group
-            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
         }
 
     }

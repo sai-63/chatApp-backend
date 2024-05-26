@@ -28,10 +28,8 @@ namespace login
             builder.Services.AddSingleton<IMongoClient>(_ => new MongoClient(mongoConnectionString));
             builder.Services.AddScoped<IUserRepository, UserRepository>(_ => new UserRepository(_.GetRequiredService<IMongoClient>(), databaseName, "Users"));
             builder.Services.AddScoped<IChatRepository, ChatRepository>(_ => new ChatRepository(_.GetRequiredService<IMongoClient>(), databaseName, "Chats"));
-            builder.Services.AddScoped<IGroupRepository, GroupRepository>(_ => new GroupRepository(_.GetRequiredService<IMongoClient>(), databaseName, "Groups"));
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IChatService, ChatService>();
-            builder.Services.AddScoped<IGroupService, GroupService>();
 
             // Add SignalR service
             builder.Services.AddSignalR();

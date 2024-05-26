@@ -2,11 +2,10 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using Repository;
-using Group = Common.Models.Group;
+//using Group = login.Common.Models.Group;
 
 namespace Service
 {
@@ -18,7 +17,7 @@ namespace Service
         {
             _groupRepository = groupRepository;
         }
-        public async Task<Common.Models.Group> GetGroupByNameAsync(string groupName)
+        public async Task<Grp> GetGroupByNameAsync(string groupName)
         {
             return await _groupRepository.GetGroupByNameAsync(groupName);
         }
@@ -26,10 +25,11 @@ namespace Service
         {
             return await _groupRepository.GetgroupidAsync(gname);
         }
-        public async Task CreateGroupAsync(Group group)
+        public async Task CreateGroupAsync(Grp group)
         {
             await _groupRepository.CreateGroupAsync(group);
         }
+
 
         public async Task<bool> AddUsersToGroupAsync(Joingrp j)
         {
@@ -37,15 +37,12 @@ namespace Service
         }
 
         //Get all groups
-        public async Task<IEnumerable<Group>> GetAllGroups()
+        public async Task<IEnumerable<Grp>> GetAllGroups()
         {
             return await _groupRepository.GetAllGroupsAsync();
         }
 
-        //public async Task<IEnumerable<Group>> GetUserGroupsAsync(string userId)
-        //{
-        //  return await _groupRepository.GetUserGroupsAsync(userId);
-        //}
+
         public async Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname)
         {
             return await _groupRepository.GetGroupMessagesAsync(groupname);
@@ -63,9 +60,14 @@ namespace Service
         }
 
 
-        public async Task SendGrpMessageAsync(string groupname,Grpmsg messages)
+        public async Task SendGrpMessageAsync(string groupname, Grpmsg messages)
         {
-            await _groupRepository.AddGrpChatAsync(groupname,messages);
+            await _groupRepository.AddGrpChatAsync(groupname, messages);
+        }
+
+        public async Task<bool> EditGMessageAsync(string groupname, string messageId, string newMessage)
+        {
+            return await _groupRepository.EditGChatAsync(groupname, messageId, newMessage);
         }
     }
 }

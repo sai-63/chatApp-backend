@@ -4,9 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using login.Common.Models;
 using Service;
 using MongoDB.Bson;
-using Common.Models;
-using System.Text.RegularExpressions;
-using Group = Common.Models.Group;
+
 namespace login.Controllers
 {
     [ApiController]
@@ -14,14 +12,10 @@ namespace login.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
-        private readonly IUserService _userService;
-        private readonly IGroupService _groupService;
 
-        public ChatController(IChatService chatService, IUserService userService, IGroupService groupService)
+        public ChatController(IChatService chatService)
         {
             _chatService = chatService;
-            _userService = userService;
-            _groupService = groupService;
         }
 
         [HttpGet]
@@ -33,19 +27,57 @@ namespace login.Controllers
 
         [HttpPost]
         [Route("Send Message")]
-        public async Task<IActionResult> SendMessage(Chat message)
+        public async Task<IActionResult> SendMessage([FromForm] Chatform fd)
         {
-            await _chatService.SendMessageAsync(message);
+            Chat message = new Chat();
+            //message.Id = fd.Id;
+            message.SenderId = fd.SenderId;
+            message.ReceiverId = fd.ReceiverId;
+            message.Message = fd.Message;
+            message.MessageId = fd.MessageId;
+            message.Timestamp = fd.Timestamp;
+
+
+            if (fd.File != null)
+            {
+                await _chatService.SendMessageWithFileAsync(message, fd.File);
+            }
+            else
+            {
+                await _chatService.SendMessageAsync(message);
+            }
+
+
             return Ok("Message sent successfully.");
         }
 
-        //Send grp msg via signalr
         [HttpPost]
-        [Route("SendGrpMessage")]
-        public async Task<IActionResult> SendGrpMessage(string groupname,Grpmsg messages)
+        [Route("DownloadFile")]
+        public async Task<IActionResult> DownloadFile([FromBody] Chat chatMessage)
         {
-            await _groupService.SendGrpMessageAsync(groupname,messages);
-            return Ok("Message sent successfully.");
+            try
+            {
+                if (chatMessage == null)
+                {
+                    return BadRequest("Chat message data is missing.");
+                }
+
+                // Check if the message has file content
+                if (chatMessage.FileContent == null)
+                {
+                    return BadRequest("Message does not contain file content.");
+                }
+
+                // Determine the content type based on the file type
+
+
+                // Return the file content with the appropriate content type
+                return File(chatMessage.FileContent, chatMessage.FileType, chatMessage.FileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
         }
 
         [HttpGet]
@@ -59,9 +91,9 @@ namespace login.Controllers
 
         [HttpPost]
         [Route("DeleteMessage")]
-        public async Task<IActionResult> DeleteMessage(String id)
+        public async Task<IActionResult> DeleteMessage(String messageId)
         {
-            var result = await _chatService.DeleteMessageAsync(id);
+            var result = await _chatService.DeleteMessageAsync(messageId);
             if (result)
             {
                 return Ok("Message deleted successfully.");
@@ -69,111 +101,38 @@ namespace login.Controllers
             return BadRequest("Couldn't delete");
         }
 
+        [HttpPost]
+        [Route("DeleteMessageForMe")]
+        public async Task<IActionResult> DeleteMessageForMe(String messageId)
+        {
+            var result = await _chatService.DeleteMessageForMeAsync(messageId);
+            if (result)
+            {
+                return Ok("Message deleted successfully.");
+            }
+            return BadRequest("Couldn't delete");
+        }
+
+        [HttpPost]
+        [Route("EditMessage")]
+        public async Task<IActionResult> EditMessage(String messageId, String newMessage)
+        {
+            var result = await _chatService.EditMessageAsync(messageId, newMessage);
+            if (result)
+            {
+                return Ok("Message edited successfully.");
+            }
+            return BadRequest("Couldn't edit");
+        }
+
+        [HttpPost("markasread")]
+        public async Task<IActionResult> MarkAsRead(List<String> messageIds)
+        {
+            await _chatService.MarkAsRead(messageIds);
+            return Ok();
+        }
+
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
-
-
-        //Group Chat API'S
-
-        [HttpPost]
-        [Route("CreateGroup")]
-        public async Task<IActionResult> CreateGroup(Group group)
-        {
-            // Validate group data
-            //if (group == null || string.IsNullOrWhiteSpace(group.Name) || group.Users == null || group.Users.Count == 0)
-            //{return BadRequest("Invalid group data");}
-
-            // Check if the group already exists
-            //var existingGroup = await _chatService.GetGroupByNameAsync(group.Name);
-            //if (existingGroup != null) {return Conflict("Group with the same name already exists");}
-
-            // Create the group
-            await _groupService.CreateGroupAsync(group);
-
-            return Ok("Group created successfully.");
-        }
-
-        [HttpPost]
-        [Route("AddUsersToGroup")]
-        public async Task<IActionResult> AddUsersToGroup(Joingrp j)
-        {
-
-            // Add users to the group
-            var adduser = await _groupService.AddUsersToGroupAsync(j);
-            if (adduser)
-            {
-                return Ok("Users added to the group successfully.");
-            }
-            else
-            {
-                //return Ok($"{username} already in Group {groupname}");
-                return Ok("Already");
-            }
-        }
-
-        //Get all groups
-        [HttpGet]
-        [Route("Getgroupid")]
-        public async Task<IEnumerable<String>> Getgroupid(string ggname)
-        {
-            return await _groupService.GetgroupidAsync(ggname);
-            
-        }
-
-        [HttpGet]
-        [Route("GetAllGroups")]
-        public async Task<IEnumerable<Group>> GetAllGroups()
-        {
-            return await _groupService.GetAllGroups();
-        }
-
-        [HttpGet]
-        [Route("GetUserGroups")]
-        public async Task<ActionResult<IEnumerable<Group>>> GetUserGroups(string username)
-        {
-            var userGroups = await _groupService.GetAllGroups(); // Fetch all groups
-            var userGroupsWithMessages = userGroups.Where(g => g.Users.Contains(username)); // Filter groups with messages from the current user
-            return Ok(userGroupsWithMessages);
-        }
-
-        [HttpGet]
-        [Route("GetGroupMessages")]
-        public async Task<ActionResult<IEnumerable<Grpmsg>>> GetGroupMessages(string groupname)
-        {
-            //if (string.IsNullOrWhiteSpace(groupid))
-            //{
-            //  return BadRequest("Group ID cannot be null or empty");
-            //}
-
-            var groupMessages = await _groupService.GetGroupMessagesAsync(groupname); // Fetch messages for the group
-
-            return Ok(groupMessages);
-        }
-
-        [HttpGet]
-        [Route("GetUserOfGroup")]
-        public async Task<ActionResult<IEnumerable<List<String>>>> GetUsersOfGroup(string groupname)
-        {
-            var grusers = await _groupService.GetUsersOfGroupAsync(groupname);
-            return Ok(grusers);
-        }
-
-        [HttpPost]
-        [Route("RemoveUserFromGroup")]
-        public async Task<IActionResult> RemoveUserFromGroup(Joingrp j)
-        {
-
-            // Remove user from the group
-            var removeuser = await _groupService.RemoveFromGroupAsync(j);
-            if (removeuser)
-            {
-                return Ok("User removed from the group successfully.");
-            }
-            else
-            {
-                //No such user in grp
-                return Ok("No such user in the group");
-            }
-        }
     }
 }

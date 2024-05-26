@@ -2,91 +2,76 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using Common.Models;
+//using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using Group = Common.Models.Group;
+//using Group = login.Common.Models.Group;
 namespace Repository
 {
     public class GroupRepository : IGroupRepository
     {
-        private readonly IMongoCollection<Group> _groo;
+        private readonly IMongoCollection<Grp> _groo;
 
         public GroupRepository(IMongoClient client, string databaseName, string collectionName)
         {
             var database = client.GetDatabase(databaseName);
-            _groo = database.GetCollection<Group>(collectionName);
+            _groo = database.GetCollection<Grp>(collectionName);
         }
 
-        public async Task<Group> GetGroupByNameAsync(string groupName)
+        public async Task<Grp> GetGroupByNameAsync(string groupName)
         {
-            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupName);
+            var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupName);
             return await _groo.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task CreateGroupAsync(Group group)
+        public async Task CreateGroupAsync(Grp group)
         {
             await _groo.InsertOneAsync(group);
         }
 
         public async Task<bool> AddUsersToGroupAsync(Joingrp j)
         {
-            var filter = Builders<Group>.Filter.Eq("name", j.groupname);
+            var filter = Builders<Grp>.Filter.Eq("name", j.groupname);
             var group = await _groo.Find(filter).FirstOrDefaultAsync();
 
             if (group != null)
             {
                 if (group.Users.Contains(j.username))
                 {
-                    // User is already in the group, print a message or handle it as needed
                     return false;
                 }
-                // Check if the user is already in the group
                 else
                 {
-                    // Add the user to the group
                     group.Users.Add(j.username);
-
-                    // Update the group document in the database
-                    var update = Builders<Group>.Update.Set("users", group.Users);
+                    var update = Builders<Grp>.Update.Set("users", group.Users);
                     await _groo.UpdateOneAsync(filter, update);
                     return true;
                 }
             }
             else
             {
-                // Handle case where group is not found
                 throw new Exception("Group not found.");
             }
         }
 
         //Get all groups
-        public async Task<IEnumerable<Group>> GetAllGroupsAsync()
+        public async Task<IEnumerable<Grp>> GetAllGroupsAsync()
         {
             return await _groo.Find(_ => true).ToListAsync();
         }
 
-        public async Task<IEnumerable<Group>> GetUserGroupsAsync(string userId)
+        public async Task<IEnumerable<Grp>> GetUserGroupsAsync(string userId)
         {
-            var filter = Builders<Group>.Filter.AnyEq(g => g.Users, userId);
+            var filter = Builders<Grp>.Filter.AnyEq(g => g.Users, userId);
             return await _groo.Find(filter).ToListAsync();
         }
-
-        //public async Task<IEnumerable<Group>> GetGroupMessagesAsync(string groupname)
-        //{
-        //  var filter = Builders<Group>.Filter.Eq(c => c.Name, groupname);
-        //return await _groo.Find(filter).ToListAsync();
-        //}
         public async Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname)
         {
-            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);
+            var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
             var group = await _groo.Find(filter).FirstOrDefaultAsync();
-
-            // If group is found, return its messages
             if (group != null)
             {
-                // Transform Group messages into a list of Message objects
                 var messages = group.Messages.Select(msg => new Grpmsg
                 {
                     SenderId = msg.SenderId,
@@ -97,14 +82,13 @@ namespace Repository
             }
             else
             {
-                // Group not found, return an empty list
                 return new List<Grpmsg>();
             }
         }
 
-        public async Task<IEnumerable<List<String>>> GetUsersOfGroupAsync(string groupname)
+        public async Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname)
         {
-            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);
+            var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
             var group = await _groo.Find(filter).FirstOrDefaultAsync();
             if (group != null)
             {
@@ -112,20 +96,20 @@ namespace Repository
             }
             else
             {
-                return new List<List<String>>();
+                return new List<List<string>>();
             }
         }
 
         public async Task<bool> RemoveFromGroupAsync(Joingrp j)
         {
-            var filter = Builders<Group>.Filter.Eq("name", j.groupname);
+            var filter = Builders<Grp>.Filter.Eq("name", j.groupname);
             var group = await _groo.Find(filter).FirstOrDefaultAsync();
             if (group != null)
             {
                 if (group.Users.Contains(j.username))
                 {
                     group.Users.Remove(j.username);
-                    var update = Builders<Group>.Update.Set("users", group.Users);
+                    var update = Builders<Grp>.Update.Set("users", group.Users);
                     await _groo.UpdateOneAsync(filter, update);
                     return true;
                 }
@@ -148,20 +132,37 @@ namespace Repository
             //return group.Id.ToString("N");
         }
 
-        public async Task AddGrpChatAsync(string groupname,Grpmsg gm)
+        public async Task AddGrpChatAsync(string groupname, Grpmsg gm)
         {
             var newMessage = new Grpmsg
             {
-                Id=ObjectId.GenerateNewId(),
+                Id = ObjectId.GenerateNewId().ToString(),
                 SenderId = gm.SenderId,
                 Message = gm.Message,
                 Timestamp = DateTime.UtcNow
             };
-            var filter = Builders<Group>.Filter.Eq(g => g.Name, groupname);        
-            var update = Builders<Group>.Update.Push(g => g.Messages, newMessage);
+            var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
+            var update = Builders<Grp>.Update.Push(g => g.Messages, newMessage);
             await _groo.UpdateOneAsync(filter, update);
         }
-        
+
+        public async Task<bool> EditGChatAsync(string groupname, string messageId, string newMessage)
+        {
+            try
+            {
+                var groupFilter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
+                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Id == messageId);
+                var combinedFilter = Builders<Grp>.Filter.And(groupFilter, messageFilter);
+                var update = Builders<Grp>.Update.Set("Messages.$.Message", newMessage);
+                var result = await _groo.UpdateOneAsync(combinedFilter, update);
+                return result.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating chat message: " + ex.Message);
+                return false;
+            }
+        }
 
     }
 }

@@ -30,9 +30,9 @@ namespace Repository
             await _collection.InsertOneAsync(user);
         }
 
-        public async Task<List<User>> GetAllUsersAsync(string id)
+        public async Task<List<User>> GetAllUsersAsync(string username)
         {
-            return await _collection.Find(e => e.Id != id).ToListAsync();
+            return await _collection.Find(e => e.Username != username).ToListAsync();
         }
 
         public async Task<bool> addFriendAsync(string userId, string friendId)
@@ -46,17 +46,17 @@ namespace Repository
             var result = await _collection.UpdateOneAsync(filter, update);
 
             // Check if the update was successful
-            if(result.ModifiedCount > 0)
+            if (result.ModifiedCount > 0)
             {
                 return true;
             }
             return false;
         }
 
-        public async Task<List<User>> GetAllFriendsAsync(string id)
+        public async Task<List<User>> GetAllFriendsAsync(string userId)
         {
             // Assuming _collection is your MongoDB collection
-            var filter = Builders<User>.Filter.Eq(u => u.Id, id);
+            var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
             var user = await _collection.Find(filter).FirstOrDefaultAsync();
 
             if (user == null)
@@ -85,5 +85,18 @@ namespace Repository
             return user != null;
         }
 
+        public async Task setUserOnlineAsync(string userName)
+        {
+            var filter = Builders<User>.Filter.Eq("Username", userName);
+            var update = Builders<User>.Update.Set("IsOnline", true);
+            await _collection.UpdateOneAsync(filter, update);
+        }
+
+        public async Task setUserOfflineAsync(string userName)
+        {
+            var filter = Builders<User>.Filter.Eq("Username", userName);
+            var update = Builders<User>.Update.Set("IsOnline", false);
+            await _collection.UpdateOneAsync(filter, update);
+        }
     }
 }
