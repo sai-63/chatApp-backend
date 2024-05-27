@@ -12,10 +12,14 @@ namespace login.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
+        private readonly IGroupService _groupService;
+        private readonly IUserService _userService; 
 
-        public ChatController(IChatService chatService)
+        public ChatController(IChatService chatService,IGroupService groupService,IUserService userService)
         {
             _chatService = chatService;
+            _groupService = groupService;
+            _userService = userService; 
         }
 
         [HttpGet]
@@ -134,5 +138,43 @@ namespace login.Controllers
 
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
+        [HttpGet]
+        [Route("Getnamebyid")]
+        public async Task<IActionResult> Getnamebyid(string userId)
+        {
+            var nname=await _groupService.GetUNameAsync(userId);
+            return Ok(nname);
+        }
+        [HttpGet]
+        [Route("GetUserGroupMessages")]
+        public async Task<IActionResult> GetUserGroupMessages(string username)
+        {
+            try
+            {
+                var groupMessages = await _groupService.GetUserGroupMessagesAsync(username);
+                return Ok(groupMessages);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+        [HttpGet]
+        [Route("Getgroupid")]
+        public async Task<IEnumerable<string>> Getgroupid(string gname)
+        {
+            return await _groupService.GetgroupidAsync(gname);
+        }
+
+        [HttpPost]
+        [Route("EditGroupMessage")]
+        public async Task<IActionResult> EditGroupMessage(string groupname, string messageId, string newMessage)
+        {
+            var res=await _groupService.EditGMessageAsync(groupname, messageId, newMessage);
+            if (res) { return Ok("Edited bro"); }
+            else { return Ok("Not edited dude"); }
+            
+
+        }
     }
 }

@@ -5,7 +5,6 @@ using System.Xml.Linq;
 using login.Common.Models;
 using MongoDB.Bson;
 using Repository;
-//using Group = login.Common.Models.Group;
 
 namespace Service
 {
@@ -16,6 +15,11 @@ namespace Service
         public GroupService(IGroupRepository groupRepository)
         {
             _groupRepository = groupRepository;
+        }
+
+        public async Task<string> GetUNameAsync(string userId)
+        {
+            return await _groupRepository.GetUnameAsync(userId);
         }
         public async Task<Grp> GetGroupByNameAsync(string groupName)
         {
@@ -37,9 +41,9 @@ namespace Service
         }
 
         //Get all groups
-        public async Task<IEnumerable<Grp>> GetAllGroups()
+        public async Task<IEnumerable<Grp>> GetUserGroupMessagesAsync(string username)
         {
-            return await _groupRepository.GetAllGroupsAsync();
+            return await _groupRepository.GetUserGroupMessagesAsync(username);
         }
 
 

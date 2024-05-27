@@ -1,19 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-//using Common.Models;
 using login.Common.Models;
 using MongoDB.Bson;
 using MongoDB.Driver.Core.Servers;
-//using Group = login.Common.Models.Group;
 namespace Repository
 {
     public interface IGroupRepository
     {
+        Task<string> GetUnameAsync(string userId);
         Task<Grp> GetGroupByNameAsync(string groupName);
         Task CreateGroupAsync(Grp group);
         Task<bool> AddUsersToGroupAsync(Joingrp j);
-        Task<IEnumerable<Grp>> GetAllGroupsAsync();
+        //Task<IEnumerable<Grp>> GetAllGroupsAsync();
+        Task<IEnumerable<Grp>> GetUserGroupMessagesAsync(string username);
         Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);

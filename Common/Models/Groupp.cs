@@ -25,8 +25,6 @@ namespace login.Common.Models
 
         [BsonElement("pic")]
         public required string PicUrl { get; set; }
-
-
     }
     public class Grpmsg
     {

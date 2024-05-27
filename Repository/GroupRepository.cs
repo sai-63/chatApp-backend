@@ -2,23 +2,29 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-//using Common.Models;
 using login.Common.Models;
+using Microsoft.Extensions.Logging;
 using MongoDB.Bson;
 using MongoDB.Driver;
-//using Group = login.Common.Models.Group;
 namespace Repository
 {
     public class GroupRepository : IGroupRepository
     {
         private readonly IMongoCollection<Grp> _groo;
+        private readonly IMongoCollection<User> _user;
 
-        public GroupRepository(IMongoClient client, string databaseName, string collectionName)
+        public GroupRepository(IMongoClient client, string databaseName, string collectionName, string userCollection)
         {
             var database = client.GetDatabase(databaseName);
             _groo = database.GetCollection<Grp>(collectionName);
+            _user = database.GetCollection<User>(userCollection);
         }
 
+        public async Task<string> GetUnameAsync(string userId)
+        {
+            var user = await _user.Find(u => u.Id == userId).FirstOrDefaultAsync();
+            return user?.Username;
+        }
         public async Task<Grp> GetGroupByNameAsync(string groupName)
         {
             var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupName);
@@ -56,9 +62,26 @@ namespace Repository
         }
 
         //Get all groups
-        public async Task<IEnumerable<Grp>> GetAllGroupsAsync()
+        public async Task<IEnumerable<Grp>> GetUserGroupMessagesAsync(string username)
         {
-            return await _groo.Find(_ => true).ToListAsync();
+            //return await _groo.Find(_ => true).ToListAsync();
+            //_logger.LogInformation($"Fetching group messages for user: {userId}");
+            var filter = Builders<Grp>.Filter.AnyEq("users", username);
+            var groups = await _groo.Find(filter).ToListAsync();
+
+            foreach (var group in groups)
+            {
+                var messagesFilter = Builders<Grp>.Filter.Eq("_id", group.Id);
+                var projection = Builders<Grp>.Projection.Include("messages");
+                var groupWithMessages = await _groo.Find(messagesFilter).Project<Grp>(projection).FirstOrDefaultAsync();
+
+                if (groupWithMessages != null)
+                {
+                    group.Messages = groupWithMessages.Messages;
+                }
+            }
+
+            return groups;
         }
 
         public async Task<IEnumerable<Grp>> GetUserGroupsAsync(string userId)

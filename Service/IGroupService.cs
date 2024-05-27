@@ -11,11 +11,11 @@ namespace Service
 {
     public interface IGroupService
     {
+        Task<string> GetUNameAsync(string userId);
         Task<Grp> GetGroupByNameAsync(string groupName);
         Task CreateGroupAsync(Grp group);
         Task<bool> AddUsersToGroupAsync(Joingrp j);
-        Task<IEnumerable<Grp>> GetAllGroups();
-        //Task<IEnumerable<Group>> GetUserGroupsAsync(string userId);
+        Task<IEnumerable<Grp>> GetUserGroupMessagesAsync(string username);
 
         Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
