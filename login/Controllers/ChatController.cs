@@ -13,13 +13,13 @@ namespace login.Controllers
     {
         private readonly IChatService _chatService;
         private readonly IGroupService _groupService;
-        private readonly IUserService _userService; 
+        private readonly IUserService _userService;
 
-        public ChatController(IChatService chatService,IGroupService groupService,IUserService userService)
+        public ChatController(IChatService chatService, IGroupService groupService, IUserService userService)
         {
             _chatService = chatService;
             _groupService = groupService;
-            _userService = userService; 
+            _userService = userService;
         }
 
         [HttpGet]
@@ -142,7 +142,7 @@ namespace login.Controllers
         [Route("Getnamebyid")]
         public async Task<IActionResult> Getnamebyid(string userId)
         {
-            var nname=await _groupService.GetUNameAsync(userId);
+            var nname = await _groupService.GetUNameAsync(userId);
             return Ok(nname);
         }
         [HttpGet]
@@ -170,11 +170,27 @@ namespace login.Controllers
         [Route("EditGroupMessage")]
         public async Task<IActionResult> EditGroupMessage(string groupname, string messageId, string newMessage)
         {
-            var res=await _groupService.EditGMessageAsync(groupname, messageId, newMessage);
+            var res = await _groupService.EditGMessageAsync(groupname, messageId, newMessage);
             if (res) { return Ok("Edited bro"); }
             else { return Ok("Not edited dude"); }
-            
 
+
+        }
+
+        [HttpPost]
+        [Route("Create Group")]
+        public async Task CreateGroup(Grp group)
+        {
+            await _groupService.CreateGroupAsync(group);
+            //return Ok("done");
+        }
+
+        [HttpPost]
+        [Route("Join Group")]
+        public async Task<IActionResult> AddUsersToGroup(Joingrp grp)
+        {
+            var res=await _groupService.AddUsersToGroupAsync(grp);
+            if (res) { return Ok("User added"); } else { return Ok("User not added"); }
         }
     }
 }
