@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using login.Common.Models;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using MongoDB.Bson;
 using Repository;
 
@@ -11,10 +12,12 @@ namespace Service
     public class GroupService : IGroupService
     {
         private readonly IGroupRepository _groupRepository;
+        private readonly IUserService _userService;
 
-        public GroupService(IGroupRepository groupRepository)
+        public GroupService(IGroupRepository groupRepository,IUserService userService)
         {
             _groupRepository = groupRepository;
+            _userService = userService;
         }
 
         public async Task<string> GetUNameAsync(string userId)
@@ -72,6 +75,10 @@ namespace Service
         public async Task<bool> EditGMessageAsync(string groupname, string messageId, string newMessage)
         {
             return await _groupRepository.EditGChatAsync(groupname, messageId, newMessage);
+        }
+        public async Task<Dictionary<string, string>> GetnameforidAsync()
+        {
+            return await _groupRepository.Getnameid();
         }
     }
 }

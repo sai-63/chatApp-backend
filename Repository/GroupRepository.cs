@@ -186,6 +186,11 @@ namespace Repository
                 return false;
             }
         }
+        public async Task<Dictionary<string, string>> Getnameid()
+        {
+            var abc = await _user.Find(_ => true).ToListAsync();
+            return abc.ToDictionary(u => u.Id, u => u.Username);
+        }
 
     }
 }

@@ -192,5 +192,13 @@ namespace login.Controllers
             var res=await _groupService.AddUsersToGroupAsync(grp);
             if (res) { return Ok("User added"); } else { return Ok("User not added"); }
         }
+
+        [HttpGet]
+        [Route("Getnameforid")]
+        public async Task<IActionResult> Getnameforid()
+        {
+            var res=await _groupService.GetnameforidAsync();
+            return Ok(res);
+        }
     }
 }

@@ -37,6 +37,18 @@ namespace login.Common.Models
         [BsonElement("message")]
         public required string Message { get; set; }
 
+        [BsonElement("FileName")]
+        public string? FileName { get; set; } // File name
+
+        [BsonElement("FileType")]
+        public string? FileType { get; set; } // File type
+
+        [BsonElement("FileContent")]
+        public byte[]? FileContent { get; set; }
+
+        [BsonElement("FileSize")]
+        public long? FileSize { get; set; }
+
         [BsonElement("Timestamp")]
         public DateTime Timestamp { get; set; }
     }

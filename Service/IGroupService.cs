@@ -23,5 +23,6 @@ namespace Service
         Task<IEnumerable<string>> GetgroupidAsync(string gname);
         Task SendGrpMessageAsync(string groupname, Grpmsg messages);
         Task<bool> EditGMessageAsync(string groupname, string messageId, string newMessage);
+        Task<Dictionary<string, string>> GetnameforidAsync();
     }
 }
