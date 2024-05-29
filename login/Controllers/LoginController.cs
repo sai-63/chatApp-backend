@@ -47,7 +47,12 @@ namespace login.Controllers
             return await _userService.getUserIdAsync(username);
         }
 
-
+        [HttpGet]
+        [Route("GetUsernameById")]
+        public async Task<string> GetUsernameById(string userId)
+        {
+            return await _userService.GetUsernameByIdAsync(userId);
+        }
         [HttpGet]
         [Route("GetOtherUsers")]
         public async Task<ActionResult<List<User>>> GetUsers(string username)

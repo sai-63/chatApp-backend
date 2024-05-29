@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace login.Common.Models
 {
@@ -31,10 +32,10 @@ namespace login.Common.Models
         [BsonElement("id")]
         public string Id { get; set; }
 
-        [BsonElement("senderId")]
+        [BsonElement("SenderId")]
         public required string SenderId { get; set; }
 
-        [BsonElement("message")]
+        [BsonElement("Message")]
         public required string Message { get; set; }
 
         [BsonElement("FileName")]
@@ -50,6 +51,14 @@ namespace login.Common.Models
         public long? FileSize { get; set; }
 
         [BsonElement("Timestamp")]
+        public DateTime Timestamp { get; set; }
+    }
+
+    public class Groupform
+    {
+        public string SenderId { get; set; }
+        public string Message { get; set; }        
+        public IFormFile? File { get; set; }
         public DateTime Timestamp { get; set; }
     }
 

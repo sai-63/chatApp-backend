@@ -145,13 +145,20 @@ namespace login.Controllers
             var nname = await _groupService.GetUNameAsync(userId);
             return Ok(nname);
         }
+
+        [HttpGet]
+        [Route("Getallgrps")]
+        public async Task<List<string>> Getallgrps(string username)
+        {
+            return await _groupService.GetallgrpsAsync(username);
+        }
         [HttpGet]
         [Route("GetUserGroupMessages")]
-        public async Task<IActionResult> GetUserGroupMessages(string username)
+        public async Task<IActionResult> GetUserGroupMessages(string groupname)
         {
             try
             {
-                var groupMessages = await _groupService.GetUserGroupMessagesAsync(username);
+                var groupMessages = await _groupService.GetUserGroupMessagesAsync(groupname);
                 return Ok(groupMessages);
             }
             catch (Exception ex)
@@ -164,6 +171,20 @@ namespace login.Controllers
         public async Task<IEnumerable<string>> Getgroupid(string gname)
         {
             return await _groupService.GetgroupidAsync(gname);
+        }
+        [HttpGet]
+        [Route("FullDetOfGroup")]
+        public async Task<IActionResult> FullDetOfGroup(string groupname)
+        {
+            try
+            {
+                var group = await _groupService.FullDetOfGroupAsync(groupname);
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
         }
 
         [HttpPost]
@@ -200,5 +221,37 @@ namespace login.Controllers
             var res=await _groupService.GetnameforidAsync();
             return Ok(res);
         }
+
+        [HttpPost]
+        [Route("SendGrpMessage")]
+        public async Task<IActionResult> SendGrpMessage(string groupname,[FromForm] Groupform gf)
+        {
+            if (string.IsNullOrWhiteSpace(gf.SenderId) || string.IsNullOrWhiteSpace(gf.Message))
+            {
+                return BadRequest("SenderId and Message are required.");
+            }
+
+            var gmessage = new Grpmsg
+            {
+                SenderId = gf.SenderId,
+                Message = gf.Message,
+                Timestamp = gf.Timestamp
+            };
+
+            if (gf.File != null)
+            {
+                await _groupService.SendGrpMessageWithFileAsync(groupname,gmessage, gf.File);
+            }
+            else
+            {
+                await _groupService.SendGrpMessageAsync(groupname,gmessage);
+            }
+
+
+            return Ok("Message sent successfully.");
+        }
+
+        
+
     }
 }

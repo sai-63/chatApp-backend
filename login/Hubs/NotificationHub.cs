@@ -7,11 +7,21 @@ namespace login.Hubs
 {
     public class NotificationHub : Hub
     {
+        //For storing grp connection ids
+        private static readonly Dictionary<string, List<string>> UserConnections = new Dictionary<string, List<string>>();
         public override async Task OnConnectedAsync()
         {
             string userId = Context.GetHttpContext().Request.Query["userId"];
             string groupName = GetGroupName(userId);
             await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+            lock (UserConnections)
+            {
+                if (!UserConnections.ContainsKey(userId))
+                {
+                    UserConnections[userId] = new List<string>();
+                }
+                UserConnections[userId].Add(Context.ConnectionId);
+            }
             await base.OnConnectedAsync();
         }
 
@@ -33,8 +43,22 @@ namespace login.Hubs
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
+            string userId = Context.GetHttpContext().Request.Query["userId"];
+
             // Handle the disconnect event when it occurs
             await HandleUserDisconnectAsync(Context.ConnectionId);
+            lock (UserConnections)
+            {
+                if (UserConnections.ContainsKey(userId))
+                {
+                    UserConnections[userId].Remove(Context.ConnectionId);
+                    if (UserConnections[userId].Count == 0)
+                    {
+                        UserConnections.Remove(userId);
+                    }
+                }
+            }
+
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -106,6 +130,28 @@ namespace login.Hubs
         private string GetGroupName(string userId)
         {
             return $"User_{userId}";
+        }
+
+        //GROUPS
+        public async Task JoinGroup(string groupName)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
+        }
+        public async Task SendToGroup(string senderId , string groupid , Grpmsg groupmsg)
+        {
+            if (UserConnections.TryGetValue(senderId, out var connectionIds))
+            {
+                foreach (var connectionId in connectionIds)
+                {
+                    if (senderId != connectionId)
+                    {
+                        await Clients.Client(connectionId).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
+                    }
+                    
+                }
+            }
+            // await Groups.AddToGroupAsync(Context.ConnectionId,groupmsg.message);
+            await Clients.Group(groupid).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
         }
 
     }

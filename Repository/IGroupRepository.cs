@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using login.Common.Models;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
 using MongoDB.Driver.Core.Servers;
 namespace Repository
@@ -12,8 +13,10 @@ namespace Repository
         Task<Grp> GetGroupByNameAsync(string groupName);
         Task CreateGroupAsync(Grp group);
         Task<bool> AddUsersToGroupAsync(Joingrp j);
-        //Task<IEnumerable<Grp>> GetAllGroupsAsync();
-        Task<IEnumerable<Grp>> GetUserGroupMessagesAsync(string username);
+
+        Task<List<string>> GetallgrpsAsync(string username);
+        Task<Grp> GetUserGroupMessagesAsync(string groupname);
+        Task<Grp> FullDetOfGroupAsync(string groupname);
         Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);

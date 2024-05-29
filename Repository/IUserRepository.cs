@@ -9,6 +9,7 @@ namespace Repository
     {
         Task<User> GetUserByEmailAsync(string email);
         Task<User> GetUserByUsernameAsync(string username);
+        Task<string> GetUsernameByIdAsync(string userId);
         Task AddUserAsync(User user);
         Task<List<User>> GetAllUsersAsync(string username);
         Task<bool> addFriendAsync(string userId, string friendId);

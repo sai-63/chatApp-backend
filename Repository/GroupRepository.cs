@@ -3,8 +3,11 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using login.Common.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic.FileIO;
 using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;
 namespace Repository
 {
@@ -62,26 +65,40 @@ namespace Repository
         }
 
         //Get all groups
-        public async Task<IEnumerable<Grp>> GetUserGroupMessagesAsync(string username)
+        public async Task<Grp> GetUserGroupMessagesAsync(string groupname)
         {
+            var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
+            return await _groo.Find(filter).FirstOrDefaultAsync();
             //return await _groo.Find(_ => true).ToListAsync();
             //_logger.LogInformation($"Fetching group messages for user: {userId}");
-            var filter = Builders<Grp>.Filter.AnyEq("users", username);
-            var groups = await _groo.Find(filter).ToListAsync();
+            //var filter = Builders<Grp>.Filter.AnyEq("users", username);
+            //var groups = await _groo.Find(filter).ToListAsync();
 
-            foreach (var group in groups)
-            {
-                var messagesFilter = Builders<Grp>.Filter.Eq("_id", group.Id);
-                var projection = Builders<Grp>.Projection.Include("messages");
-                var groupWithMessages = await _groo.Find(messagesFilter).Project<Grp>(projection).FirstOrDefaultAsync();
+            //foreach (var group in groups)
+            //{
+            //  var messagesFilter = Builders<Grp>.Filter.Eq("_id", group.Id);
+            //var projection = Builders<Grp>.Projection.Include("messages");
+            //var groupWithMessages = await _groo.Find(messagesFilter).Project<Grp>(projection).FirstOrDefaultAsync();
 
-                if (groupWithMessages != null)
-                {
-                    group.Messages = groupWithMessages.Messages;
-                }
-            }
+            //if (groupWithMessages != null)
+            //{
+            //group.Messages = groupWithMessages.Messages;
+            //}
+            //}
 
-            return groups;
+            //return groups;
+        }
+        public async Task<Grp> FullDetOfGroupAsync(string groupname)
+        {
+            var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
+            return await _groo.Find(filter).FirstOrDefaultAsync();
+        }
+        public async Task<List<string>> GetallgrpsAsync(string username)
+        {
+            var filter = Builders<Grp>.Filter.AnyEq(g => g.Users, username);
+            var projection = Builders<Grp>.Projection.Include(g => g.Name).Exclude("_id");
+            var groups = await _groo.Find(filter).Project<Grp>(projection).ToListAsync();
+            return groups.Select(g => g.Name).ToList();
         }
 
         public async Task<IEnumerable<Grp>> GetUserGroupsAsync(string userId)
@@ -159,9 +176,14 @@ namespace Repository
         {
             var newMessage = new Grpmsg
             {
-                Id = ObjectId.GenerateNewId().ToString(),
+                //Id = ObjectId.GenerateNewId().ToString(),
+                Id=gm.Id,
                 SenderId = gm.SenderId,
                 Message = gm.Message,
+                FileName= gm.FileName,
+                FileType=gm.FileType,
+                FileContent=gm.FileContent,
+                FileSize=gm.FileSize,
                 Timestamp = DateTime.UtcNow
             };
             var filter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
@@ -189,7 +211,7 @@ namespace Repository
         public async Task<Dictionary<string, string>> Getnameid()
         {
             var abc = await _user.Find(_ => true).ToListAsync();
-            return abc.ToDictionary(u => u.Id, u => u.Username);
+            return abc.ToDictionary(u => u.Id, u => u.Nickname);
         }
 
     }

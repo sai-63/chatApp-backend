@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using login.Common.Models;
+using MongoDB.Driver;
 using Repository;
 
 namespace Service
@@ -55,6 +56,11 @@ namespace Service
         public async Task<List<User>> getAllUsersAsync(string username)
         {
             return await _userRepository.GetAllUsersAsync(username);
+        }
+
+        public async Task<string> GetUsernameByIdAsync(string userId)
+        {
+            return await _userRepository.GetUsernameByIdAsync(userId);
         }
 
         public async Task<string> getUserIdAsync(string username)
