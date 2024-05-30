@@ -214,5 +214,48 @@ namespace Repository
             return abc.ToDictionary(u => u.Id, u => u.Nickname);
         }
 
+        public async Task<bool> DeleteGrpMessageAsync(string groupname, string messageId)
+        {
+            try
+            {
+                var groupFilter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
+                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Id == messageId);
+
+                var combinedFilter = Builders<Grp>.Filter.And(groupFilter, messageFilter);
+
+                var update = Builders<Grp>.Update.PullFilter(g => g.Messages, m => m.Id == messageId);
+
+                var result = await _groo.UpdateOneAsync(combinedFilter, update);
+
+                return result.ModifiedCount > 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error deleting chat message: " + e.Message);
+                return false;
+            }
+        }
+        public async Task<bool> DeleteGrpForMeAsync(string groupname, string messageId)
+        {
+            try
+            {
+                var groupFilter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
+                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Id == messageId && m.DeletedBy==false);
+                var combinedFilter = Builders<Grp>.Filter.And(groupFilter, messageFilter);
+
+                var update = Builders<Grp>.Update.Set("messages.$.DeletedBy", true);
+
+                var result = await _groo.UpdateOneAsync(combinedFilter, update);
+
+                return result.ModifiedCount > 0;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Error deleting chat message for user: " + e.Message);
+                return false;
+            }
+        }
+
+
     }
 }

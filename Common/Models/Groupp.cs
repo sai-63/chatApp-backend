@@ -52,6 +52,8 @@ namespace login.Common.Models
 
         [BsonElement("Timestamp")]
         public DateTime Timestamp { get; set; }
+        [BsonElement("DeletedBy")]
+        public bool DeletedBy { get; set; }
     }
 
     public class Groupform

@@ -129,5 +129,16 @@ namespace Service
             // Save the chat message (with file) to the database
             await _groupRepository.AddGrpChatAsync(groupname,gmessage);
         }
+
+        public async Task<bool> DeleteGrpMessageAsync(string groupname, string messageId)
+        {
+            return await _groupRepository.DeleteGrpMessageAsync(groupname, messageId);
+        }
+
+        public async Task<bool> DeleteGrpForMeAsync(string groupname, string messageId)
+        {
+            return await _groupRepository.DeleteGrpForMeAsync(groupname, messageId);
+        }
+
     }
 }

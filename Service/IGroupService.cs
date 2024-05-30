@@ -31,5 +31,7 @@ namespace Service
         Task<bool> EditGMessageAsync(string groupname, string messageId, string newMessage);
         Task<Dictionary<string, string>> GetnameforidAsync();
         Task SendGrpMessageWithFileAsync(string groupname,Grpmsg gmessage, IFormFile file);
+        Task<bool> DeleteGrpMessageAsync(string groupname, string messageId);
+        Task<bool> DeleteGrpForMeAsync(string groupname, string messageId);
     }
 }

@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using login.Common.Models;
 using Service;
 using MongoDB.Bson;
+using MongoDB.Driver;
+using System.Text.RegularExpressions;
 
 namespace login.Controllers
 {
@@ -116,6 +118,32 @@ namespace login.Controllers
             }
             return BadRequest("Couldn't delete");
         }
+
+        [HttpPost]
+        [Route("DeleteGrpMessage")]
+        public async Task<IActionResult> DeleteGrpMessage(string groupname, string messageId)
+        {
+            // Create a filter to find the group by its name
+            var res=await _groupService.DeleteGrpMessageAsync(groupname,messageId);
+            if (res)
+            {
+                return Ok("Deleted bro");
+            }
+            return BadRequest("i cant");
+        }
+
+        [HttpPost]
+        [Route("DeleteGrpForMe")]
+        public async Task<IActionResult> DeleteGrpForMe(string groupname, string messageId)
+        {
+            var res = await _groupService.DeleteGrpForMeAsync(groupname, messageId);
+            if (res)
+            {
+                return Ok("Message deleted for you.");
+            }
+            return BadRequest("Unable to delete message.");
+        }
+
 
         [HttpPost]
         [Route("EditMessage")]

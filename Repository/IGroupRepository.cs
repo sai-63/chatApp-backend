@@ -25,5 +25,7 @@ namespace Repository
         Task AddGrpChatAsync(string groupname, Grpmsg gm);
         Task<bool> EditGChatAsync(string groupname, string messageId, string newMessage);
         Task<Dictionary<string, string>> Getnameid();
+        Task<bool> DeleteGrpMessageAsync(string groupname, string messageId);
+        Task<bool> DeleteGrpForMeAsync(string groupname, string messageId);
     }
 }

@@ -86,6 +86,14 @@ namespace login.Hubs
             await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
             await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId, chatDate);
         }
+        public async Task RemoveGrpMessage(string groupid, string messageId, string chatDate)
+        {
+            //string userId = Context.GetHttpContext().Request.Query["userId"];
+            //string groupName = GetGroupName(groupid);
+            //string mygroupName = GetGroupName(userId);
+            //await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
+            await Clients.Group(groupid).SendAsync("GrpMessageRemoved", messageId, chatDate);
+        }
 
         public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate)
         {
@@ -139,17 +147,13 @@ namespace login.Hubs
         }
         public async Task SendToGroup(string senderId , string groupid , Grpmsg groupmsg)
         {
-            if (UserConnections.TryGetValue(senderId, out var connectionIds))
-            {
-                foreach (var connectionId in connectionIds)
-                {
-                    if (senderId != connectionId)
-                    {
-                        await Clients.Client(connectionId).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
-                    }
-                    
-                }
-            }
+            //if (UserConnections.TryGetValue(senderId, out var connectionIds))
+            //{
+                //foreach (var connectionId in connectionIds)
+                //{
+                 //   await Clients.Client(connectionId).SendAsync("ReceiveGrpMessage", senderId, groupmsg);                    
+                //}
+            //}
             // await Groups.AddToGroupAsync(Context.ConnectionId,groupmsg.message);
             await Clients.Group(groupid).SendAsync("ReceiveGrpMessage", senderId, groupmsg);
         }
