@@ -58,6 +58,7 @@ namespace login.Common.Models
 
     public class Groupform
     {
+        public string Id { get; set; }
         public string SenderId { get; set; }
         public string Message { get; set; }        
         public IFormFile? File { get; set; }

@@ -165,10 +165,16 @@ namespace Repository
 
             //await Clients.Group(groupName).SendAsync("Send", $"{Context.ConnectionId} has left the group {groupName}.");
         }
-        public async Task<IEnumerable<string>> GetgroupidAsync(string gname)
+        public async Task<string> GetgroupidAsync(string gname)
         {
             var group = await _groo.Find(group => group.Name == gname).FirstOrDefaultAsync();
-            return group == null ? null : new List<string> { group.Id.ToString() };
+            return group == null ? null : group.Id.ToString();
+            //return group.Id.ToString("N");
+        }
+        public async Task<string> GetgroupnameAsync(ObjectId groupid)
+        {
+            var group = await _groo.Find(group => group.Id == groupid).FirstOrDefaultAsync();
+            return group == null ? null : group.Name;
             //return group.Id.ToString("N");
         }
 

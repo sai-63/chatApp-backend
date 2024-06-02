@@ -34,9 +34,13 @@ namespace Service
         {
             return await _groupRepository.GetGroupByNameAsync(groupName);
         }
-        public async Task<IEnumerable<string>> GetgroupidAsync(string gname)
+        public async Task<string> GetgroupidAsync(string gname)
         {
             return await _groupRepository.GetgroupidAsync(gname);
+        }
+        public async Task<string> GetgroupnameAsync(ObjectId groupid)
+        {
+            return await _groupRepository.GetgroupnameAsync(groupid);
         }
         public async Task CreateGroupAsync(Grp group)
         {

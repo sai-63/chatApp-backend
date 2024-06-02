@@ -20,7 +20,8 @@ namespace Repository
         Task<IEnumerable<Grpmsg>> GetGroupMessagesAsync(string groupname);
         Task<IEnumerable<List<string>>> GetUsersOfGroupAsync(string groupname);
         Task<bool> RemoveFromGroupAsync(Joingrp j);
-        Task<IEnumerable<string>> GetgroupidAsync(string gname);
+        Task<string> GetgroupidAsync(string gname);
+        Task<string> GetgroupnameAsync(ObjectId groupid);
 
         Task AddGrpChatAsync(string groupname, Grpmsg gm);
         Task<bool> EditGChatAsync(string groupname, string messageId, string newMessage);

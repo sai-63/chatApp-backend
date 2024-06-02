@@ -196,9 +196,15 @@ namespace login.Controllers
         }
         [HttpGet]
         [Route("Getgroupid")]
-        public async Task<IEnumerable<string>> Getgroupid(string gname)
+        public async Task<string> Getgroupid(string gname)
         {
             return await _groupService.GetgroupidAsync(gname);
+        }
+        [HttpGet]
+        [Route("Getgroupname")]
+        public async Task<string> Getgroupname(ObjectId groupid)
+        {
+            return await _groupService.GetgroupnameAsync(groupid);
         }
         [HttpGet]
         [Route("FullDetOfGroup")]
@@ -261,6 +267,7 @@ namespace login.Controllers
 
             var gmessage = new Grpmsg
             {
+                Id = gf.Id,
                 SenderId = gf.SenderId,
                 Message = gf.Message,
                 Timestamp = gf.Timestamp
