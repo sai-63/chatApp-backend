@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.SignalR;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using login.Common.Models;
+using System.Text.RegularExpressions;
 
 namespace login.Hubs
 {
@@ -133,9 +134,11 @@ namespace login.Hubs
                         if (GroupConnections[groupName].Count == 0)
                         {
                             GroupConnections.Remove(groupName);
+                            GroupMessages.Remove(groupName);
                         }
                     }
                 }
+                ClearGroupMessages(groupName);
             }
             catch (System.Exception ex)
             {
@@ -190,6 +193,16 @@ namespace login.Hubs
                     GroupMessages[groupid] = new List<Grpmsg>();
                 }
                 GroupMessages[groupid].Add(groupmsg);
+            }
+        }
+        private void ClearGroupMessages(string groupName)
+        {
+            lock (GroupMessages)
+            {
+                if (GroupMessages.ContainsKey(groupName))
+                {
+                    GroupMessages.Remove(groupName);
+                }
             }
         }
     }
