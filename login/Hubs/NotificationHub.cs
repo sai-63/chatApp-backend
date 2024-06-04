@@ -11,6 +11,7 @@ namespace login.Hubs
     {
         // For storing group connection IDs
         private static readonly Dictionary<string, List<string>> GroupConnections = new Dictionary<string, List<string>>();
+        //Store grpmsg from Footer for a specific groupid
         private static readonly Dictionary<string, List<Grpmsg>> GroupMessages = new Dictionary<string, List<Grpmsg>>();
 
         public override async Task OnConnectedAsync()
@@ -73,12 +74,6 @@ namespace login.Hubs
             await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
             await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId, chatDate);
         }
-
-        public async Task RemoveGrpMessage(string groupid, string messageId, string chatDate)
-        {
-            await Clients.Group(groupid).SendAsync("GrpMessageRemoved", messageId, chatDate);
-        }
-
         public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate)
         {
             string userId = Context.GetHttpContext().Request.Query["userId"];
@@ -147,21 +142,21 @@ namespace login.Hubs
             }
         }
 
-        public async Task JoinGroup(string groupid)
+        public async Task JoinGroup(string groupName)
         {
             try
             {
-                Console.WriteLine($"Attempting to join group: {groupid}, ConnectionId: {Context.ConnectionId}");
-                await Groups.AddToGroupAsync(Context.ConnectionId, groupid);
+                Console.WriteLine($"Attempting to join group: {groupName}, ConnectionId: {Context.ConnectionId}");
+                await Groups.AddToGroupAsync(Context.ConnectionId, groupName);
                 lock (GroupConnections)
                 {
-                    if (!GroupConnections.ContainsKey(groupid))
+                    if (!GroupConnections.ContainsKey(groupName))
                     {
-                        GroupConnections[groupid] = new List<string>();
+                        GroupConnections[groupName] = new List<string>();
                     }
-                    GroupConnections[groupid].Add(Context.ConnectionId);
+                    GroupConnections[groupName].Add(Context.ConnectionId);
                 }
-                if (GroupMessages.TryGetValue(groupid, out var messages))
+                if (GroupMessages.TryGetValue(groupName, out var messages))
                 {
                     foreach (var msg in messages)
                     {
@@ -171,14 +166,14 @@ namespace login.Hubs
             }
             catch (System.Exception ex)
             {
-                Console.WriteLine($"Error joining group '{groupid}': {ex.Message}");
+                Console.WriteLine($"Error joining group '{groupName}': {ex.Message}");
                 throw;
             }
         }
 
-        public async Task SendToGroup(string senderId, string groupid, Grpmsg groupmsg)
+        public async Task SendToGroup(string senderId, string groupName, Grpmsg groupmsg)
         {
-            if (GroupConnections.TryGetValue(groupid, out var connectionIds))
+            if (GroupConnections.TryGetValue(groupName, out var connectionIds))
             {
                 foreach (var connectionId in connectionIds)
                 {
@@ -188,11 +183,11 @@ namespace login.Hubs
 
             lock (GroupMessages)
             {
-                if (!GroupMessages.ContainsKey(groupid))
+                if (!GroupMessages.ContainsKey(groupName))
                 {
-                    GroupMessages[groupid] = new List<Grpmsg>();
+                    GroupMessages[groupName] = new List<Grpmsg>();
                 }
-                GroupMessages[groupid].Add(groupmsg);
+                GroupMessages[groupName].Add(groupmsg);
             }
         }
         private void ClearGroupMessages(string groupName)
@@ -204,6 +199,11 @@ namespace login.Hubs
                     GroupMessages.Remove(groupName);
                 }
             }
+        }
+
+        public async Task RemoveGrpMessage(string groupName, string messageId, string chatDate)
+        {
+            await Clients.Group(groupName).SendAsync("GrpMessageRemoved", messageId, chatDate);
         }
     }
 }
