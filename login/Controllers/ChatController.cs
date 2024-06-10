@@ -36,6 +36,7 @@ namespace login.Controllers
             message.Message = fd.Message;
             message.MessageId = fd.MessageId;
             message.Timestamp = fd.Timestamp;
+            message.ReplyToMessageId = fd.ReplyToMessageId;
 
 
             if (fd.File != null)

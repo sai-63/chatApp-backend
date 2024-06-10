@@ -43,15 +43,15 @@ namespace login.Hubs
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
 
-        public async Task SendToUser(string senderId, string receiverId, Chat chat)
+        public async Task SendToUser(string senderId, string receiverId, string senderName, Chat chat)
         {
             string groupName = GetGroupName(receiverId);
             string mygroupName = GetGroupName(senderId);
-            await Clients.Group(groupName).SendAsync("ReceiveMessage", chat);
-            await Clients.Group(mygroupName).SendAsync("ReceiveMessage", chat);
+            await Clients.Group(groupName).SendAsync("ReceiveMessage", chat, senderName);
+            await Clients.Group(mygroupName).SendAsync("ReceiveMessage", chat, senderName);
         }
 
-        public async Task RemoveMessage(string receiverId,string messageId,string chatDate)
+        public async Task RemoveMessage(string receiverId,string messageId,string chatDate,string senderName)
         {
             // Perform deletion logic here, e.g., remove message from data store
 
@@ -59,11 +59,11 @@ namespace login.Hubs
             string userId = Context.GetHttpContext().Request.Query["userId"];
             string groupName = GetGroupName(receiverId);
             string mygroupName = GetGroupName(userId);
-            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate);
-            await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId, chatDate);
+            await Clients.Group(groupName).SendAsync("MessageRemoved", messageId, chatDate, senderName);
+            await Clients.Group(mygroupName).SendAsync("MessageRemoved", messageId, chatDate, senderName);
         }
 
-        public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate)
+        public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate, string senderName)
         {
             // Perform deletion logic here, e.g., remove message from data store
 
@@ -71,14 +71,14 @@ namespace login.Hubs
             string userId = Context.GetHttpContext().Request.Query["userId"];
             string groupName = GetGroupName(receiverId);
             string mygroupName = GetGroupName(userId);
-            await Clients.Group(groupName).SendAsync("MessageEdited", messageId, newMessage, chatDate);
-            await Clients.Group(mygroupName).SendAsync("MessageEdited", messageId, newMessage, chatDate);
+            await Clients.Group(groupName).SendAsync("MessageEdited", messageId, newMessage, chatDate, senderName);
+            await Clients.Group(mygroupName).SendAsync("MessageEdited", messageId, newMessage, chatDate, senderName);
         }   
 
-        public async Task MarkAsRead(string receiverId,List<string> messageIds)
+        public async Task MarkAsRead(string receiverId,List<string> messageIds, string senderName)
         {
             string groupName = GetGroupName(receiverId);
-            await Clients.Group(groupName).SendAsync("MessageRead", messageIds);
+            await Clients.Group(groupName).SendAsync("MessageRead", messageIds, senderName);
         }
 
         public async Task UserOnline(string username)
@@ -89,6 +89,12 @@ namespace login.Hubs
         public async Task UserOffline(string username,DateTime time)
         {
             await Clients.All.SendAsync("UserOffline", username, time);
+        }
+
+        public async Task UserTyping(string receiverId,string username, string status)
+        {
+            string groupName = GetGroupName(receiverId);
+            await Clients.Group(groupName).SendAsync("UserTyping", username, status);
         }
 
         public async Task IncrementUnseenMessages(string receiverId,string username,string seen = null)

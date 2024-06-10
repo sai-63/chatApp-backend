@@ -27,6 +27,8 @@ namespace login.Common.Models
 
         [BsonElement("SenderRemoved")]
         public bool SenderRemoved { get; set; }
+        [BsonElement("ReplyToMessageId")]
+        public String ReplyToMessageId { get; set; }
 
         [BsonElement("FileName")]
         public string? FileName { get; set; } // File name
@@ -50,6 +52,7 @@ namespace login.Common.Models
         public string SenderId { get; set; }
         public string ReceiverId { get; set; }
         public string Message { get; set; }
+        public String ReplyToMessageId { get; set; }
         public DateTime Timestamp { get; set; }
         public IFormFile? File { get; set; }
     }
@@ -77,8 +80,8 @@ namespace login.Common.Models
         [BsonElement("Nickname")]
         public string Nickname { get; set; }
 
-        [BsonElement("IsOnline")]
-        public bool IsOnline { get; set; }
+        [BsonElement("UserStatus")]
+        public string UserStatus { get; set; }
 
         [BsonElement("LastSeen")]
         public DateTime LastSeen { get; set; }
