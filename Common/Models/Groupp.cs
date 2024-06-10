@@ -52,10 +52,16 @@ namespace login.Common.Models
 
         [BsonElement("Timestamp")]
         public DateTime Timestamp { get; set; }
+
         [BsonElement("DeletedBy")]
         public bool DeletedBy { get; set; }
     }
 
+    public class Abc
+    {
+        public string Id { get; set; }
+        public string Timestamp { get; set; }
+    }
     public class Groupform
     {
         public string Id { get; set; }

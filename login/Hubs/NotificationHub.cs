@@ -13,6 +13,9 @@ namespace login.Hubs
         private static readonly Dictionary<string, List<string>> GroupConnections = new Dictionary<string, List<string>>();
         //Store grpmsg from Footer for a specific groupid
         private static readonly Dictionary<string, List<Grpmsg>> GroupMessages = new Dictionary<string, List<Grpmsg>>();
+        //Store messages that are deleted
+        //private static readonly Dictionary<string, List<Grpmsg>> DelGroupMessages = new Dictionary<string, List<Grpmsg>>();
+        private static readonly Dictionary<string, List<Abc>> DelGroupMessages = new Dictionary<string, List<Abc>>();
 
         public override async Task OnConnectedAsync()
         {
@@ -130,6 +133,7 @@ namespace login.Hubs
                         {
                             GroupConnections.Remove(groupName);
                             GroupMessages.Remove(groupName);
+                            //DelGroupMessages.Remove(groupName);
                         }
                     }
                 }
@@ -161,6 +165,15 @@ namespace login.Hubs
                     foreach (var msg in messages)
                     {
                         await Clients.Caller.SendAsync("ReceiveGrpMessage", msg.SenderId, msg);
+                    }                    
+                }
+                Console.WriteLine("Hey");
+                if (DelGroupMessages.TryGetValue(groupName, out var messagess))
+                {
+                    Console.WriteLine("Hi");
+                    foreach (var msg in messagess)
+                    {                        
+                        await Clients.Caller.SendAsync("GrpMessageRemoved", msg.Id, msg.Timestamp);
                     }
                 }
             }
@@ -203,7 +216,61 @@ namespace login.Hubs
 
         public async Task RemoveGrpMessage(string groupName, string messageId, string chatDate)
         {
+            // Parse the chatDate string to DateTime
+            if (!DateTime.TryParse(chatDate, out var parsedDate))
+            { return; }
+
+            Console.WriteLine($"RemoveGrpMessage called with groupName: {groupName}, messageId: {messageId}, chatDate: {chatDate},{parsedDate},{parsedDate.Date}");
+            lock (GroupMessages)
+            {
+                if (GroupMessages.TryGetValue(groupName, out var messages))
+                {
+                    
+                    var messageToRemove = messages.FirstOrDefault(m => m.Id == messageId && m.Timestamp == parsedDate.Date);
+
+                    Console.WriteLine("Got", messageToRemove);
+                    if (messageToRemove != null)
+                    {
+                        messages.Remove(messageToRemove);
+                       /* lock (DelGroupMessages)
+                        {
+                            if (!DelGroupMessages.ContainsKey(groupName))
+                            {
+                                DelGroupMessages[groupName] = new List<Grpmsg>();
+                            }
+                            DelGroupMessages[groupName].Add(messageToRemove);
+                        }*/
+                    }
+                }
+                lock (DelGroupMessages)
+                {
+                    if (!DelGroupMessages.ContainsKey(groupName))
+                    {
+                        DelGroupMessages[groupName] = new List<Abc>();
+                    }
+                    var deletedMessage = new Abc
+                    {
+                        Id = messageId,
+                        Timestamp = chatDate,
+                    };
+                    Console.WriteLine(deletedMessage.Id,deletedMessage.Timestamp);
+                    DelGroupMessages[groupName].Add(deletedMessage);                   
+                }
+            }
             await Clients.Group(groupName).SendAsync("GrpMessageRemoved", messageId, chatDate);
         }
+
+        /*private bool IsMessageDeleted(string groupName, string messageId, DateTime timestamp)
+        {
+            lock (DelGroupMessages)
+            {
+                if (DelGroupMessages.TryGetValue(groupName, out var deletedMessages))
+                {
+                    return deletedMessages.Any(m => m.Id == messageId && m.Timestamp == timestamp);
+                }
+            }
+            return false;
+        }*/
+
     }
 }
