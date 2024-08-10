@@ -12,12 +12,17 @@ namespace login.Controllers
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
+        private readonly IGroupService _groupService;
+        private readonly IUserService _userService;
 
-        public ChatController(IChatService chatService)
+        public ChatController(IChatService chatService, IGroupService groupService, IUserService userService)
         {
             _chatService = chatService;
+            _groupService = groupService;
+            _userService = userService;
         }
 
+        //Get all messages of 1-2-1 chat in allMessages in frontend
         [HttpGet]
         [Route("Get All Messages")]
         public async Task<IEnumerable<Chat>> GetAllChats()
@@ -25,6 +30,23 @@ namespace login.Controllers
             return await _chatService.GetAllChatsAsync();
         }
 
+        //Get group messages for allGMessages frontend
+        [HttpGet]
+        [Route("GetUserGroupMessages")]
+        public async Task<IActionResult> GetUserGroupMessages(string groupname)
+        {
+            try
+            {
+                var groupMessages = await _groupService.GetUserGroupMessagesAsync(groupname);
+                return Ok(groupMessages);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+
+        //Single chat
         [HttpPost]
         [Route("Send Message")]
         public async Task<IActionResult> SendMessage([FromForm] Chatform fd)
@@ -49,6 +71,37 @@ namespace login.Controllers
             }
 
             
+            return Ok("Message sent successfully.");
+        }
+
+        //Send message for a group
+        [HttpPost]
+        [Route("SendGrpMessage")]
+        public async Task<IActionResult> SendGrpMessage(string groupname, [FromForm] Groupform gf)
+        {
+            if (string.IsNullOrWhiteSpace(gf.SenderId) || string.IsNullOrWhiteSpace(gf.Message))
+            {
+                return BadRequest("SenderId and Message are required.");
+            }
+
+            var gmessage = new Grpmsg
+            {
+                Idd = gf.Id,
+                SenderId = gf.SenderId,
+                Message = gf.Message,
+                Timestamp = gf.Timestamp
+            };
+
+            if (gf.File != null)
+            {
+                await _groupService.SendGrpMessageWithFileAsync(groupname, gmessage, gf.File);
+            }
+            else
+            {
+                await _groupService.SendGrpMessageAsync(groupname, gmessage);
+            }
+
+
             return Ok("Message sent successfully.");
         }
 
@@ -89,7 +142,7 @@ namespace login.Controllers
             return Ok(result); // Returns the result as a JSON response
         }
 
-
+        //Delete message for both users
         [HttpPost]
         [Route("DeleteMessage")]
         public async Task<IActionResult> DeleteMessage(String messageId)
@@ -102,6 +155,21 @@ namespace login.Controllers
             return BadRequest("Couldn't delete");
         }
 
+        //Delete Message for everyone in the group
+        [HttpPost]
+        [Route("DeleteGrpMessageForAll")]
+        public async Task<IActionResult> DeleteGrpMessageForAll(string groupname, string messageId)
+        {
+            // Create a filter to find the group by its name
+            var res = await _groupService.DeleteGrpMessageAsync(groupname, messageId);
+            if (res)
+            {
+                return Ok("Deleted bro");
+            }
+            return BadRequest("i cant");
+        }
+
+        //Delete message for sender in 1-2-1 chat
         [HttpPost]
         [Route("DeleteMessageForMe")]
         public async Task<IActionResult> DeleteMessageForMe(String messageId)
@@ -112,6 +180,19 @@ namespace login.Controllers
                 return Ok("Message deleted successfully.");
             }
             return BadRequest("Couldn't delete");
+        }
+
+        //Delete message in group for only sender
+        [HttpPost]
+        [Route("DeleteGrpForMe")]
+        public async Task<IActionResult> DeleteGrpForMe(string groupname, string messageId)
+        {
+            var res = await _groupService.DeleteGrpForMeAsync(groupname, messageId);
+            if (res)
+            {
+                return Ok("Message deleted for you.");
+            }
+            return BadRequest("Unable to delete message.");
         }
 
         [HttpPost]
@@ -135,5 +216,89 @@ namespace login.Controllers
 
 
         // Other methods for getting chats by sender/receiver id can be implemented similarly
+
+        [HttpGet]
+        [Route("Getnamebyid")]
+        public async Task<IActionResult> Getnamebyid(string userId)
+        {
+            var nname = await _groupService.GetUNameAsync(userId);
+            return Ok(nname);
+        }
+
+        [HttpGet]
+        [Route("Getallgrps")]
+        public async Task<List<string>> Getallgrps(string username)
+        {
+            return await _groupService.GetallgrpsAsync(username);
+        }
+        
+
+        [HttpGet]
+        [Route("Getgroupid")]
+        public async Task<string> Getgroupid(string gname)
+        {
+            return await _groupService.GetgroupidAsync(gname);
+        }
+        
+        //Get groupName from group ID
+        [HttpGet]
+        [Route("Getgroupname")]
+        public async Task<string> Getgroupname(string groupid)
+        {
+            return await _groupService.GetgroupnameAsync(groupid);
+        }
+
+
+        [HttpGet]
+        [Route("FullDetOfGroup")]
+        public async Task<IActionResult> FullDetOfGroup(string groupname)
+        {
+            try
+            {
+                var group = await _groupService.FullDetOfGroupAsync(groupname);
+                return Ok(group);
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+        }
+
+        [HttpPost]
+        [Route("EditGroupMessage")]
+        public async Task<IActionResult> EditGroupMessage(string groupname, string messageId, string newMessage)
+        {
+            var res = await _groupService.EditGMessageAsync(groupname, messageId, newMessage);
+            if (res) { return Ok("Edited bro"); }
+            else { return Ok("Not edited dude"); }
+
+
+        }
+
+        //Create Group
+        [HttpPost]
+        [Route("Create Group")]
+        public async Task CreateGroup(Grp group)
+        {
+            await _groupService.CreateGroupAsync(group);
+            //return Ok("done");
+        }
+
+        [HttpPost]
+        [Route("Join Group")]
+        public async Task<IActionResult> AddUsersToGroup(Joingrp grp)
+        {
+            var res = await _groupService.AddUsersToGroupAsync(grp);
+            if (res) { return Ok("User added"); } else { return Ok("User not added"); }
+        }
+        //Get users names and their ids
+        [HttpGet]
+        [Route("Getnameforid")]
+        public async Task<IActionResult> Getnameforid()
+        {
+            var res = await _groupService.GetnameforidAsync();
+            return Ok(res);
+        }
+
     }
 }

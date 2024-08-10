@@ -11,6 +11,7 @@ namespace Service
         Task<bool> SignupAsync(User user);
         Task<bool> IsFriend(string userId,string friendId);
         Task<List<User>> getAllUsersAsync(string username);
+        Task<string> GetUsernameByIdAsync(string userId);
         Task<string> getUserIdAsync(string username);
         Task<bool> addFriend(string userId,string friendId);
         Task<List<User>> getAllFriendsAsync(string userId);

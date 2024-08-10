@@ -47,6 +47,11 @@ namespace Service
             return await _userRepository.GetAllUsersAsync(username);
         }
 
+        public async Task<string> GetUsernameByIdAsync(string userId)
+        {
+            return await _userRepository.GetUsernameByIdAsync(userId);
+        }
+
         public async Task<string> getUserIdAsync(string username)
         {
             User user = await _userRepository.GetUserByUsernameAsync(username);

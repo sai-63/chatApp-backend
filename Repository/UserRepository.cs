@@ -53,6 +53,13 @@ namespace Repository
             return false;
         }
 
+        public async Task<string> GetUsernameByIdAsync(string userId)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Id, userId);
+            var projection = Builders<User>.Projection.Include(u => u.Username).Exclude(u => u.Id);
+            var user = await _collection.Find(filter).Project<User>(projection).FirstOrDefaultAsync();
+            return user?.Username;
+        }
         public async Task<List<User>> GetAllFriendsAsync(string userId)
         {
             // Assuming _collection is your MongoDB collection
