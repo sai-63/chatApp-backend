@@ -144,5 +144,9 @@ namespace Service
             return await _groupRepository.DeleteGrpForMeAsync(groupname, messageId);
         }
 
+        public async Task<bool> EditGrpMessageAsync(string groupName,string messageId, string newMessage)
+        {
+            return await _groupRepository.EditGrpChatAsync(groupName,messageId, newMessage);
+        }
     }
 }

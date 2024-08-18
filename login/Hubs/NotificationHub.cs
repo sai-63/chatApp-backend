@@ -103,7 +103,20 @@ namespace login.Hubs
             string mygroupName = GetGroupName(userId);
             await Clients.Group(groupName).SendAsync("MessageEdited", messageId, newMessage, chatDate, senderName);
             await Clients.Group(mygroupName).SendAsync("MessageEdited", messageId, newMessage, chatDate, senderName);
-        }   
+        }
+
+        public async Task EditGroupMessage(string groupName, string messageId, string newMessage, string chatDate)
+        {
+            string grp = GetGrppName(groupName);
+            await Clients.Group(grp).SendAsync("GrpMessageEdited", groupName,messageId, newMessage, chatDate);
+        }
+
+        public async Task EditProfile(string username,string newNickName)
+        {
+            //string user=GetGroupName(username);
+            await Clients.All.SendAsync("UpdateNickname", username, newNickName);
+            //await Clients.GroupExcept(user, new[] { username }).SendAsync("UpdateNickname", username, newNickName);
+        }
 
         public async Task MarkAsRead(string receiverId,List<string> messageIds, string senderName)
         {

@@ -207,6 +207,31 @@ namespace login.Controllers
             return BadRequest("Couldn't edit");
         }
 
+        [HttpPost]
+        [Route("EditGrpMessage")]
+        public async Task<IActionResult> EditGrpMessage(string groupName,string messageId,string newMessage)
+        {
+            var result = await _groupService.EditGrpMessageAsync(groupName,messageId, newMessage);
+            if (result)
+            {
+                return Ok("Message edited successfully.");
+            }
+            return BadRequest("Couldn't edit");
+        }
+
+        [HttpPut]
+        [Route("EditProfile")]
+        public async Task<IActionResult> UpdateNickname(string username, string newNickname)
+        {
+            var result = await _userService.UpdateNicknameAsync(username, newNickname);
+            if (!result)
+            {
+                return BadRequest("Failed to update nickname.");
+            }
+
+            return Ok("Nickname updated successfully.");
+        }
+
         [HttpPost("markasread")]
         public async Task<IActionResult> MarkAsRead(List<String> messageIds)
             {

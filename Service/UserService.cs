@@ -91,5 +91,10 @@ namespace Service
         {
             await _userRepository.setUserOfflineAsync(userName,time);
         }
+
+        public async Task<bool> UpdateNicknameAsync(string username, string newNickname)
+        {
+            return await _userRepository.UpdateNickname(username, newNickname);
+        }
     }
 }

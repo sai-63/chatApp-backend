@@ -107,5 +107,14 @@ namespace Repository
             await _collection.UpdateOneAsync(filter, updateUserStatus);
             await _collection.UpdateOneAsync(filter, updateLastSeen);
         }
+
+        public async Task<bool> UpdateNickname(string username, string newNickname)
+        {
+            var filter = Builders<User>.Filter.Eq(u => u.Username, username);
+            var update = Builders<User>.Update.Set(u => u.Nickname, newNickname);
+            var result = await _collection.UpdateOneAsync(filter, update);            
+            return result.ModifiedCount > 0;
+        }
+
     }
 }

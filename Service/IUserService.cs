@@ -17,5 +17,6 @@ namespace Service
         Task<List<User>> getAllFriendsAsync(string userId);
         Task setUserOnline(string userName);
         Task setUserOffline(string userName,DateTime time);
+        Task<bool>UpdateNicknameAsync(string username, string newNickname);
     }
 }

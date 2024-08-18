@@ -17,5 +17,6 @@ namespace Repository
         Task<List<User>> GetAllFriendsAsync(string userId);
         Task setUserOnlineAsync(string userName);
         Task setUserOfflineAsync(string userName,DateTime time);
+        Task<bool> UpdateNickname(string username, string newNickname);
     }
 }

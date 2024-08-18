@@ -71,6 +71,7 @@ namespace login.Common.Models
 
         [BsonElement("Email")]
         public string Email { get; set; }
+
         [BsonElement("Username")]
         public string Username { get; set; }
 

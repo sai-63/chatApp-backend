@@ -262,6 +262,29 @@ namespace Repository
             }
         }
 
+        public async Task<bool> EditGrpChatAsync(string groupName,string messageId, string newMessage)
+        {
+            try
+            {
+                var filter = Builders<Grp>.Filter.And(
+                    Builders<Grp>.Filter.Eq(g => g.Name, groupName),
+                    Builders<Grp>.Filter.Eq("Messages.Idd", messageId)
+                );
+
+                var update = Builders<Grp>.Update
+                    .Set("Messages.$.Message", newMessage)
+                    .Set("Messages.$.Timestamp", DateTime.UtcNow);
+
+                var result = await _groo.UpdateOneAsync(filter, update);
+                return result.ModifiedCount > 0;
+            }
+            catch (Exception ex)
+            {
+                // Handle exception (e.g., log error)
+                Console.WriteLine("Error updating chat message: " + ex.Message);
+                return false;
+            }
+        }
 
     }
 }
