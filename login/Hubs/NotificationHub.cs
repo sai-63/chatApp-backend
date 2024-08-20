@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using login.Common.Models;
 using System.Text.RegularExpressions;
 using System;
+using MongoDB.Driver.Core.Servers;
 
 namespace login.Hubs
 {
@@ -73,6 +74,28 @@ namespace login.Hubs
         {
             string group = GetGrppName(groupName);
             await Clients.Group(group).SendAsync("ReceiveGrpMessage", senderId, groupName, groupmsg);
+        }
+
+        public async Task CreateGroup(string user,string newGroup,string newPic)
+        {
+            string gidd = GetGrppName(newGroup.Trim());
+            await Groups.AddToGroupAsync(Context.ConnectionId, gidd);
+            await Clients.All.SendAsync("RecCreateGroup", user,newGroup,newPic);
+
+        }
+        public async Task AddToGroup(string groupName,string frnd, Dictionary<string, List<GroupMessage>> matter)
+        {
+            //string ug = GetGroupName(user);
+            string gidd = GetGrppName(groupName.Trim());
+            await Groups.AddToGroupAsync(Context.ConnectionId, gidd);
+            await Clients.All.SendAsync("AddFriend",groupName,frnd,matter);
+            //await Clients.Group(gidd).SendAsync("AddFriends",frnd,g);
+
+        }
+        public async Task AddMe(string groupName)
+        {
+            string gidd = GetGrppName(groupName.Trim());
+            await Groups.AddToGroupAsync(Context.ConnectionId, gidd);
         }
 
         public async Task RemoveMessage(string receiverId,string messageId,string chatDate,string senderName)

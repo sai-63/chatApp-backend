@@ -1,4 +1,5 @@
 ﻿using login.Common.Models;
+using Microsoft.AspNetCore.Mvc;
 using MongoDB.Driver;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -114,6 +115,12 @@ namespace Repository
             var update = Builders<User>.Update.Set(u => u.Nickname, newNickname);
             var result = await _collection.UpdateOneAsync(filter, update);            
             return result.ModifiedCount > 0;
+        }
+
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await _collection.Find(_=>true).ToListAsync();
+            
         }
 
     }

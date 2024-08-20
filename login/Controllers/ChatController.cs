@@ -240,7 +240,6 @@ namespace login.Controllers
         }
 
 
-        // Other methods for getting chats by sender/receiver id can be implemented similarly
 
         [HttpGet]
         [Route("Getnamebyid")]
@@ -302,20 +301,30 @@ namespace login.Controllers
 
         //Create Group
         [HttpPost]
-        [Route("Create Group")]
-        public async Task CreateGroup(Grp group)
+        [Route("CreateGroup")]
+        public async Task<IActionResult>CreateGroup([FromBody] Grp group)
         {
             await _groupService.CreateGroupAsync(group);
-            //return Ok("done");
+            return Ok(group);
         }
 
         [HttpPost]
-        [Route("Join Group")]
-        public async Task<IActionResult> AddUsersToGroup(Joingrp grp)
+        [Route("AddUsersToGroup")]
+        public async Task<IActionResult> AddUsersToGroup(string groupname,string frnd)
         {
-            var res = await _groupService.AddUsersToGroupAsync(grp);
+            var res = await _groupService.AddUsersToGroupAsync(groupname,frnd);
             if (res) { return Ok("User added"); } else { return Ok("User not added"); }
         }
+
+        //Get current user's friends list
+        [HttpGet]
+        [Route("MyFriends")]
+
+        public async Task<List<User>>MyFriends()
+        {
+            return await _userService.GetAllUsersAsync();
+        }
+
         //Get users names and their ids
         [HttpGet]
         [Route("Getnameforid")]

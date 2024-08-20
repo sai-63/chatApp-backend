@@ -18,5 +18,6 @@ namespace Service
         Task setUserOnline(string userName);
         Task setUserOffline(string userName,DateTime time);
         Task<bool>UpdateNicknameAsync(string username, string newNickname);
+        Task<List<User>> GetAllUsersAsync();
     }
 }

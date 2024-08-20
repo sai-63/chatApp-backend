@@ -18,5 +18,6 @@ namespace Repository
         Task setUserOnlineAsync(string userName);
         Task setUserOfflineAsync(string userName,DateTime time);
         Task<bool> UpdateNickname(string username, string newNickname);
+        Task<List<User>> GetAllUsersAsync();
     }
 }

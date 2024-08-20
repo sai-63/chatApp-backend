@@ -34,25 +34,25 @@ namespace Repository
             return await _groo.Find(filter).FirstOrDefaultAsync();
         }
 
-        public async Task CreateGroupAsync(Grp group)
+        public async Task CreateGroupAsync([FromBody] Grp group)
         {
             await _groo.InsertOneAsync(group);
         }
 
-        public async Task<bool> AddUsersToGroupAsync(Joingrp j)
+        public async Task<bool> AddUsersToGroupAsync(string groupname, string frnd)
         {
-            var filter = Builders<Grp>.Filter.Eq("name", j.groupname);
+            var filter = Builders<Grp>.Filter.Eq("name",groupname);
             var group = await _groo.Find(filter).FirstOrDefaultAsync();
 
             if (group != null)
             {
-                if (group.Users.Contains(j.username))
+                if (group.Users.Contains(frnd))
                 {
                     return false;
                 }
                 else
                 {
-                    group.Users.Add(j.username);
+                    group.Users.Add(frnd);
                     var update = Builders<Grp>.Update.Set("users", group.Users);
                     await _groo.UpdateOneAsync(filter, update);
                     return true;
@@ -285,6 +285,5 @@ namespace Repository
                 return false;
             }
         }
-
     }
 }

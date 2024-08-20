@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using login.Common.Models;
+using Microsoft.AspNetCore.Mvc;
 using Repository;
 
 namespace Service
@@ -95,6 +96,11 @@ namespace Service
         public async Task<bool> UpdateNicknameAsync(string username, string newNickname)
         {
             return await _userRepository.UpdateNickname(username, newNickname);
+        }
+
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllUsersAsync();
         }
     }
 }

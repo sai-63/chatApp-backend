@@ -15,8 +15,8 @@ namespace Service
     {
         Task<string> GetUNameAsync(string userId);
         Task<Grp> GetGroupByNameAsync(string groupName);
-        Task CreateGroupAsync(Grp group);
-        Task<bool> AddUsersToGroupAsync(Joingrp j);
+        Task CreateGroupAsync([FromBody] Grp group);
+        Task<bool> AddUsersToGroupAsync(string groupname, string frnd);
 
         Task<IDictionary<string, List<Grpmsg>>> GetUserGroupMessagesAsync(string groupname);
         Task<Grp> FullDetOfGroupAsync(string groupname);
@@ -36,5 +36,6 @@ namespace Service
         Task<bool> DeleteGrpForMeAsync(string groupname, string messageId);
 
         Task<bool> EditGrpMessageAsync(string groupName, string messageId, string newMessage);
+
     }
 }

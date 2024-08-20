@@ -22,7 +22,7 @@ namespace login.Common.Models
         public required List<string> Users { get; set; }
 
         [BsonElement("messages")]
-        public required List<Grpmsg> Messages { get; set; }
+        public List<Grpmsg> Messages { get; set; }
 
         [BsonElement("pic")]
         public required string PicUrl { get; set; }
@@ -112,6 +112,17 @@ namespace login.Common.Models
         public DateTime Timestamp { get; set; }
 
 
+    }
+
+    public class GroupMessage
+    {
+        public string Id { get; set; }
+        public string Content { get; set; }
+    }
+
+    public class GroupMessages
+    {
+        public Dictionary<string, List<GroupMessage>> Messages { get; set; }
     }
 
 }

@@ -11,8 +11,8 @@ namespace Repository
     {
         Task<string> GetUnameAsync(string userId);
         Task<Grp> GetGroupByNameAsync(string groupName);
-        Task CreateGroupAsync(Grp group);
-        Task<bool> AddUsersToGroupAsync(Joingrp j);
+        Task CreateGroupAsync([FromBody] Grp group);
+        Task<bool> AddUsersToGroupAsync(string groupname, string frnd);
 
         Task<List<string>> GetallgrpsAsync(string username);
         Task<Grp> GetUserGroupMessagesAsync(string groupname);

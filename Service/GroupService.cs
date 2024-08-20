@@ -42,15 +42,15 @@ namespace Service
         {
             return await _groupRepository.GetgroupnameAsync(groupid);
         }
-        public async Task CreateGroupAsync(Grp group)
+        public async Task CreateGroupAsync([FromBody] Grp group)
         {
             await _groupRepository.CreateGroupAsync(group);
         }
 
 
-        public async Task<bool> AddUsersToGroupAsync(Joingrp j)
+        public async Task<bool> AddUsersToGroupAsync(string groupname, string frnd)
         {
-            return await _groupRepository.AddUsersToGroupAsync(j);
+            return await _groupRepository.AddUsersToGroupAsync(groupname,frnd);
         }
 
         //Get all groups
@@ -147,6 +147,6 @@ namespace Service
         public async Task<bool> EditGrpMessageAsync(string groupName,string messageId, string newMessage)
         {
             return await _groupRepository.EditGrpChatAsync(groupName,messageId, newMessage);
-        }
+        }        
     }
 }
