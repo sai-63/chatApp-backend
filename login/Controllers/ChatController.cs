@@ -86,7 +86,7 @@ namespace login.Controllers
 
             var gmessage = new Grpmsg
             {
-                Idd = gf.Id,
+                Id = gf.Id,
                 SenderId = gf.SenderId,
                 Message = gf.Message,
                 Timestamp = gf.Timestamp

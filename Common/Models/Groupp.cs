@@ -29,8 +29,8 @@ namespace login.Common.Models
     }
     public class Grpmsg
     {
-        [BsonElement("Idd")]
-        public string Idd { get; set; }
+        [BsonElement("Id")]
+        public string Id { get; set; }
 
         [BsonElement("SenderId")]
         public required string SenderId { get; set; }

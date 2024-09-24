@@ -183,7 +183,7 @@ namespace Repository
             var newMessage = new Grpmsg
             {
                 //Id = ObjectId.GenerateNewId().ToString(),
-                Idd = gm.Idd,
+                Id = gm.Id,
                 SenderId = gm.SenderId,
                 Message = gm.Message,
                 FileName = gm.FileName,
@@ -202,7 +202,7 @@ namespace Repository
             try
             {
                 var groupFilter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
-                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Idd == messageId);
+                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Id == messageId);
                 var combinedFilter = Builders<Grp>.Filter.And(groupFilter, messageFilter);
                 var update = Builders<Grp>.Update.Set("Messages.$.Message", newMessage);
                 var result = await _groo.UpdateOneAsync(combinedFilter, update);
@@ -225,11 +225,11 @@ namespace Repository
             try
             {
                 var groupFilter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
-                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Idd == messageId);
+                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Id == messageId);
 
                 var combinedFilter = Builders<Grp>.Filter.And(groupFilter, messageFilter);
 
-                var update = Builders<Grp>.Update.PullFilter(g => g.Messages, m => m.Idd == messageId);
+                var update = Builders<Grp>.Update.PullFilter(g => g.Messages, m => m.Id == messageId);
 
                 var result = await _groo.UpdateOneAsync(combinedFilter, update);
 
@@ -246,7 +246,7 @@ namespace Repository
             try
             {
                 var groupFilter = Builders<Grp>.Filter.Eq(g => g.Name, groupname);
-                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Idd == messageId && m.DeletedBy == false);
+                var messageFilter = Builders<Grp>.Filter.ElemMatch(g => g.Messages, m => m.Id == messageId && m.DeletedBy == false);
                 var combinedFilter = Builders<Grp>.Filter.And(groupFilter, messageFilter);
 
                 var update = Builders<Grp>.Update.Set("messages.$.DeletedBy", true);
@@ -268,7 +268,7 @@ namespace Repository
             {
                 var filter = Builders<Grp>.Filter.And(
                     Builders<Grp>.Filter.Eq(g => g.Name, groupName),
-                    Builders<Grp>.Filter.Eq("Messages.Idd", messageId)
+                    Builders<Grp>.Filter.Eq("Messages.Id", messageId)
                 );
 
                 var update = Builders<Grp>.Update

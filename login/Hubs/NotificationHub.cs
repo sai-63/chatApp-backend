@@ -83,7 +83,7 @@ namespace login.Hubs
             await Clients.All.SendAsync("RecCreateGroup", user,newGroup,newPic);
 
         }
-        public async Task AddToGroup(string groupName,string frnd, Dictionary<string, List<GroupMessage>> matter)
+        public async Task AddToGroup(string groupName,string frnd, Dictionary<string, List<Grpmsg>> matter)
         {
             //string ug = GetGroupName(user);
             string gidd = GetGrppName(groupName.Trim());
@@ -115,6 +115,11 @@ namespace login.Hubs
             string grp = GetGrppName(groupName);
             await Clients.Group(grp).SendAsync("GrpMessageRemoved", groupName, messageId, chatDate);
         }
+        public async Task RemoveGrpMessageForMe(string groupName, string messageId, string chatDate,string sender)
+        {
+            string grp = GetGrppName(groupName);
+            await Clients.Group(grp).SendAsync("GrpMessageRemovedForMe", groupName, messageId, chatDate,sender);
+        }
 
         public async Task EditMessage(string receiverId, string messageId, string newMessage, string chatDate, string senderName)
         {
@@ -134,10 +139,10 @@ namespace login.Hubs
             await Clients.Group(grp).SendAsync("GrpMessageEdited", groupName,messageId, newMessage, chatDate);
         }
 
-        public async Task EditProfile(string username,string newNickName)
+        public async Task EditProfile(string username,string newNickName,string userId)
         {
             //string user=GetGroupName(username);
-            await Clients.All.SendAsync("UpdateNickname", username, newNickName);
+            await Clients.All.SendAsync("UpdateNickname", username, newNickName, userId);
             //await Clients.GroupExcept(user, new[] { username }).SendAsync("UpdateNickname", username, newNickName);
         }
 
